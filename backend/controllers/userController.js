@@ -1,96 +1,174 @@
 import User from "../models/user.js";
-import asyncHandler from "../middlewares/asyncHandler.js";
+import { uploadProfileImage } from "../services/uploadService.js";
 import bcrypt from "bcryptjs";
-import jwt from "jasonwebtoken";
+import { generateToken } from "../utils/generateToken.js";
 
-export const createUser = asyncHandler(async (req, res) => {
-  const { firstName, lastName, email, password, role } = req.body;
+export const signup = async (req, res) => {
+  try {
+    const { firstName, lastName, email, password } = req.body;
 
-  // Validate input
-  if (!firstName || !lastName || !email || !password) {
-    res.status(400);
-    throw new Error("Please provide all required fields");
+    if (!firstName || !lastName || !email || !password) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    if (password.length < 6) {
+      return res.status(400).json({ message: "Password must be at least 6 characters" });
+    }
+
+    if (!/\S+@\S+\.\S+/.test(email)) {
+      return res.status(400).json({ message: "Invalid email format" });
+    }
+
+    const userExists = await User.findOne({ email });
+    if (userExists) {
+      return res.status(400).json({ message: "User already exists" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser = new User({
+      firstName,
+      lastName,
+      email,
+      password: hashedPassword,
+      role: "user",
+    });
+
+    await newUser.save();
+    generateToken(newUser._id, res);
+
+    res.status(201).json({
+      _id: newUser._id,
+      firstName: newUser.firstName,
+      lastName: newUser.lastName,
+      email: newUser.email,
+      profilePic: newUser.profilePic,
+      role: newUser.role,
+    });
+
+  } catch (error) {
+    console.error("Error in signup controller:", error);
+    res.status(500).json({ message: "Error in signup controller" });
   }
+};
+export const login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
 
-  // Check if user exists
-  const existingUser = await User.findOne({ email });
-  if (existingUser) {
-    res.status(400);
-    throw new Error("User with this email already exists");
-  }
+    if (!email || !password) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
 
-  // Hash password
-  const hashedPassword = await bcrypt.hash(password, 10);
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
 
-  // Create user
-  const user = await User.create({
-    firstName,
-    lastName,
-    email,
-    password: hashedPassword,
-    role: role || "user",
-  });
+    const isPasswordCorrect = await bcrypt.compare(password, user.password);
+    if (!isPasswordCorrect) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
 
-  if (!user) {
-    res.status(400);
-    throw new Error("Failed to create user");
-  }
+    generateToken(user, res);
 
-  // Return response **without token**
-  res.status(201).json({
-    message: "User created successfully",
-    user: {
-      id: user._id,
+    res.status(200).json({
+      _id: user._id,
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email,
+      profilePic: user.profilePic,
       role: user.role,
-    },
-  });
-});
+    });
+    console.log("User logged in:", user.email);
+  
 
-const loginUser = asyncHandler(async (req, res) => {
-  const { email, password } = req.body;
-
-  // 1️⃣ Validate input
-  if (!email || !password) {
-    res.status(400);
-    throw new Error("Please provide email and password");
+  } catch (error) {
+    console.error("Error in login controller:", error);
+    res.status(500).json({ message: "Error in login controller" });
   }
+};
+export const uploadProfilePic = async (req, res) => {
+  try {
+    const file = req.file;
 
-  // 2️⃣ Find user by email
-  const user = await User.findOne({ email });
-  if (!user) {
-    res.status(401);
-    throw new Error("Invalid email or password");
+    if (!req.user || !req.user._id) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    if (!file) {
+      return res.status(400).json({ message: "No file uploaded" });
+    }
+
+    const imageUrl = await uploadProfileImage(file);
+
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      { profilePic: imageUrl },
+      { new: true }
+    );
+
+    res.json(user);
+
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
+};
+export const logout = (req, res) => {
+  try {
+    res.clearCookie("jwt", {
+      httpOnly: true,
+      sameSite: "strict",
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
+    });
 
-  // 3️⃣ Compare password
-  const isPasswordValid = await bcrypt.compare(password, user.password);
-  if (!isPasswordValid) {
-    res.status(401);
-    throw new Error("Invalid email or password");
+    return res.status(200).json({
+      success: true,
+      message: "Logged out successfully",
+    });
+
+  } catch (error) {
+    console.error("Error in logout controller:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Error in logout controller",
+    });
   }
-
-  // 4️⃣ Generate JWT token
-  const token = jwt.sign(
-    { userId: user._id, role: user.role },
-    process.env.JWT_SECRET,
-    { expiresIn: "7d" }, // token expires in 7 days
+};
+export const getAllUsers = async (req, res) => {
+  const users = await User.find().select("-password");
+  res.json(users);
+};
+export const deleteUser = async (req, res) => {
+  await User.findByIdAndDelete(req.params.id);
+  res.json({ message: "User deleted" });
+};
+export const updateUser = async (req, res) => {
+  const user = await User.findByIdAndUpdate(
+    req.params.id,
+    req.body,
+    { new: true }
   );
 
-  // 5️⃣ Send response
-  res.status(200).json({
-    message: "Login successful",
-    token,
-    user: {
-      id: user._id,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-      role: user.role,
-    },
-  });
-});
+  res.json(user);
+};
+export const makeAdmin = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
 
-export { loginUser, createUser };
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    user.role = "admin";
+    await user.save();
+
+    res.json({
+      message: "User promoted to admin successfully",
+      user,
+    });
+
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

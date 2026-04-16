@@ -1,17 +1,20 @@
-import User from "../models/user";
 import express from "express";
-import { createUser, loginUser } from "../controllers/userController,js";
+import { signup, login,logout } from "../controllers/userController.js";
+import { upload } from "../middlewares/uploadMiddleware.js";
+import {uploadProfilePic} from "../controllers/userController.js";
+import { protect, adminOnly } from "../middlewares/authMiddleware.js";
+import { getAllUsers, deleteUser, updateUser,makeAdmin } from "../controllers/userController.js";
 
 const router = express.Router();
 
-// @route   POST /api/users/register
-// @desc    Register a new user
-// @access  Public
-router.post("/register", createUser);
+router.post("/signup", signup);
+router.post("/login", login);
+router.post("/upload-profile-pic", upload.single("image"), uploadProfilePic);
+router.post("/logout", logout);
 
-// @route   POST /api/users/login
-// @desc    Login user and return token
-// @access  Public
-router.post("/login", loginUser);
+router.get("/", protect, adminOnly, getAllUsers);
+router.delete("/:id", protect, adminOnly, deleteUser);
+router.put("/:id", protect, adminOnly, updateUser);
+router.patch("/make-admin/:id",protect,adminOnly,makeAdmin);
 
 export default router;

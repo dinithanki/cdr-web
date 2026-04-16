@@ -1,20 +1,27 @@
 import jwt from "jsonwebtoken";
 
-// Protect routes middleware
 export const protect = (req, res, next) => {
-  const tokenString = req.headers.authorization;
-
-  if (!tokenString) {
-    return res.status(401).json({ message: "Not authorized, no token" });
-  }
-
-  const token = tokenString.replace("Bearer ", "");
-
   try {
-    const decoded = jwt.verify(token, process.env.JWT_KEY);
-    req.user = decoded; // now req.user has user info
+    const token = req.cookies.jwt;
+
+    if (!token) {
+      return res.status(401).json({ message: "Not logged in" });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
+    console.log("TOKEN:", token);
+    console.log("DECODED:", decoded);
+
     next();
   } catch (error) {
-    res.status(403).json({ message: "Invalid token" });
+    return res.status(401).json({ message: "Invalid token" });
   }
+    
+};
+export const adminOnly = (req, res, next) => {
+  if (!req.user || req.user.role !== "admin") {
+    return res.status(403).json({ message: "Admin access only" });
+  }
+  next();
 };
