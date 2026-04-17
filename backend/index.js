@@ -12,10 +12,15 @@ import cookieParser from 'cookie-parser';
 connectDB();
 
 const app = express();
+app.use(
+  cors({
+    origin: "http://localhost:5173", // ✅ your frontend
+    credentials: true,               // ✅ allow cookies
+  })
+);
 
 // Middlewares FIRST
 app.use(express.json());
-app.use(cors());
 app.use(cookieParser());
 
 // Routes

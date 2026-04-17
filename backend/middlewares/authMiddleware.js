@@ -9,7 +9,10 @@ export const protect = (req, res, next) => {
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded;
+    req.user = {
+      id: decoded.id,
+      role: decoded.role,
+    };
     console.log("TOKEN:", token);
     console.log("DECODED:", decoded);
 

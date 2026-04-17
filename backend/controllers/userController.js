@@ -12,7 +12,9 @@ export const signup = async (req, res) => {
     }
 
     if (password.length < 6) {
-      return res.status(400).json({ message: "Password must be at least 6 characters" });
+      return res
+        .status(400)
+        .json({ message: "Password must be at least 6 characters" });
     }
 
     if (!/\S+@\S+\.\S+/.test(email)) {
@@ -35,9 +37,16 @@ export const signup = async (req, res) => {
     });
 
     await newUser.save();
-    generateToken(newUser._id, res);
 
-    res.status(201).json({
+    generateToken(
+      {
+        id: newUser._id,
+        role: newUser.role,
+      },
+      res,
+    );
+
+    return res.status(201).json({
       _id: newUser._id,
       firstName: newUser.firstName,
       lastName: newUser.lastName,
@@ -45,7 +54,6 @@ export const signup = async (req, res) => {
       profilePic: newUser.profilePic,
       role: newUser.role,
     });
-
   } catch (error) {
     console.error("Error in signup controller:", error);
     res.status(500).json({ message: "Error in signup controller" });
@@ -69,9 +77,16 @@ export const login = async (req, res) => {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    generateToken(user, res);
+    generateToken(
+      {
+        id: user._id,
+        role: user.role,
+      },
+      res,
+    );
+    console.log("User logged in:", user.email);
 
-    res.status(200).json({
+    return res.status(200).json({
       _id: user._id,
       firstName: user.firstName,
       lastName: user.lastName,
@@ -79,9 +94,6 @@ export const login = async (req, res) => {
       profilePic: user.profilePic,
       role: user.role,
     });
-    console.log("User logged in:", user.email);
-  
-
   } catch (error) {
     console.error("Error in login controller:", error);
     res.status(500).json({ message: "Error in login controller" });
@@ -91,7 +103,7 @@ export const uploadProfilePic = async (req, res) => {
   try {
     const file = req.file;
 
-    if (!req.user || !req.user._id) {
+    if (!req.user || !req.user.id) {
       return res.status(401).json({ message: "Unauthorized" });
     }
 
@@ -102,13 +114,12 @@ export const uploadProfilePic = async (req, res) => {
     const imageUrl = await uploadProfileImage(file);
 
     const user = await User.findByIdAndUpdate(
-      req.user._id,
+      req.user.id,
       { profilePic: imageUrl },
-      { new: true }
+      { new: true },
     );
 
     res.json(user);
-
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -126,7 +137,6 @@ export const logout = (req, res) => {
       success: true,
       message: "Logged out successfully",
     });
-
   } catch (error) {
     console.error("Error in logout controller:", error);
     return res.status(500).json({
@@ -144,11 +154,9 @@ export const deleteUser = async (req, res) => {
   res.json({ message: "User deleted" });
 };
 export const updateUser = async (req, res) => {
-  const user = await User.findByIdAndUpdate(
-    req.params.id,
-    req.body,
-    { new: true }
-  );
+  const user = await User.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+  });
 
   res.json(user);
 };
@@ -167,8 +175,15 @@ export const makeAdmin = async (req, res) => {
       message: "User promoted to admin successfully",
       user,
     });
-
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+export const checkAuth = async (req, res) => {
+  try {
+    res.status(200).json(req.user);
+  } catch (error) {
+    console.error("Error in checkAuth controller:", error);
+    res.status(500).json({ message: "Error in checkAuth controller" });
   }
 };
