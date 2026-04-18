@@ -80,8 +80,6 @@ export const useAuthStore = create((set) => ({
       set({ isUpdatingProfile: false });
     }
   },
-  // 🔵 Google Login
-
   googleLogin: async () => {
     try {
       set({ loading: true });
@@ -113,12 +111,13 @@ export const useAuthStore = create((set) => ({
     try {
       set({ loading: true });
 
-      await sendPasswordResetEmail(auth, email);
-      toast.success("Password reset email sent!");
-
+      const res = await axiosInstance.post("/users/forgot-password", {
+        email,
+      });
+      toast.success(res.data.message || "Reset email sent");
       return true;
     } catch (error) {
-      toast.error(error?.message || "Something went wrong");
+      toast.error(error.response?.data?.message || "Something went wrong");
       return false;
     } finally {
       set({ loading: false });

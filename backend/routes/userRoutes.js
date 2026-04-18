@@ -10,6 +10,8 @@ import {
   deleteUser,
   updateUser,
   makeAdmin,
+  forgotPassword,
+  resetPassword,
 } from "../controllers/userController.js";
 
 const router = express.Router();
@@ -19,6 +21,8 @@ router.post("/login", login);
 router.post("/upload-profile-pic", upload.single("image"), uploadProfilePic);
 router.post("/logout", logout);
 router.post("/google-login", googleLogin);
+router.post("/forgot-password", forgotPassword);
+router.post("/reset-password", resetPassword);
 
 router.get("/", protect, adminOnly, getAllUsers);
 router.delete("/:id", protect, adminOnly, deleteUser);

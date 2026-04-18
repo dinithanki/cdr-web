@@ -2,7 +2,8 @@ import User from "../models/user.js";
 import { uploadProfileImage } from "../services/uploadService.js";
 import bcrypt from "bcryptjs";
 import { generateToken } from "../utils/generateToken.js";
-
+import crypto from "crypto";
+import { sendEmail } from "../services/emailService.js";
 export const signup = async (req, res) => {
   try {
     const { firstName, lastName, email, password } = req.body;
@@ -256,5 +257,62 @@ export const googleLogin = async (req, res) => {
   } catch (error) {
     console.error("Error in googleLogin:", error);
     res.status(500).json({ message: "Google login failed" });
+  }
+};
+
+export const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    const user = await User.findOne({ email });
+
+    // always return same message (security)
+    if (!user) {
+      return res.json({ message: "If email exists, reset link sent" });
+    }
+
+    const token = crypto.randomBytes(32).toString("hex");
+
+    user.resetToken = token;
+    user.resetExpire = Date.now() + 1000 * 60 * 15;
+
+    await user.save();
+    const resetLink = `${process.env.CLIENT_URL}/reset-password/${token}`;
+
+    await sendEmail(
+      email,
+      "Reset Password",
+      `<h2>Reset Password</h2>
+       <p>Click below link:</p>
+       <a href="${resetLink}">${resetLink}</a>`,
+    );
+
+    res.json({ message: "If email exists, reset link sent" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+export const resetPassword = async (req, res) => {
+  try {
+    const { token, password } = req.body;
+
+    const user = await User.findOne({
+      resetToken: token,
+      resetExpire: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return res.status(400).json({ message: "Invalid or expired token" });
+    }
+
+    user.password = await bcrypt.hash(password, 10);
+    user.resetToken = undefined;
+    user.resetExpire = undefined;
+
+    await user.save();
+
+    res.json({ message: "Password updated successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };

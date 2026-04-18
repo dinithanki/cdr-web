@@ -9,48 +9,41 @@ const ForgotPasswordPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const success = await forgotPassword(email);
-
     if (success) {
       navigate("/login");
     }
   };
 
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-100">
+    <div className="flex items-center justify-center h-screen">
       <form
         onSubmit={handleSubmit}
-        className="w-96 bg-white p-6 rounded-lg shadow-md"
+        className="p-6 bg-white shadow rounded w-96"
       >
-        <h2 className="text-2xl font-bold mb-4 text-center">Forgot Password</h2>
-
-        <p className="text-sm text-gray-500 mb-4 text-center">
-          Enter your email and we’ll send you a reset link
-        </p>
+        <h2 className="text-xl font-bold mb-4">Forgot Password</h2>
 
         <input
           type="email"
-          placeholder="Enter your email"
-          className="w-full border p-2 rounded mb-4"
+          placeholder="Enter email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          className="w-full border p-2 mb-4"
           required
         />
 
         <button
-          type="submit"
-          disabled={loading || !email}
-          className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700 disabled:opacity-50"
+          disabled={loading}
+          className="w-full bg-blue-600 text-white p-2"
         >
           {loading ? "Sending..." : "Send Reset Link"}
         </button>
 
         <p
           onClick={() => navigate("/login")}
-          className="text-sm text-center mt-4 text-gray-500 cursor-pointer hover:underline"
+          className="text-sm text-center mt-3 cursor-pointer"
         >
-          Back to Login
+          Back to login
         </p>
       </form>
     </div>

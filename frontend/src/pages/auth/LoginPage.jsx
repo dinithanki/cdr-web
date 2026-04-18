@@ -75,13 +75,12 @@ const LoginPage = () => {
         <button type="button" onClick={handleGoogleLogin} disabled={loading}>
           {loading ? "Loading..." : "Continue with Google"}
         </button>
-        <button
-          type="button"
+        <p
           onClick={() => navigate("/forgot-password")}
-          className="text-sm text-blue-600 hover:underline mt-2"
+          className="text-sm text-blue-600 cursor-pointer mt-2"
         >
           Forgot Password?
-        </button>
+        </p>
       </form>
     </div>
   );
