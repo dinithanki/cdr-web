@@ -4,31 +4,44 @@ const userSchema = mongoose.Schema(
   {
     firstName: {
       type: String,
-      required: true,
-      trim: true,
+      trim: true, // removed required
     },
 
     lastName: {
       type: String,
-      required: true,
-      trim: true,
+      trim: true, //removed required
     },
 
     email: {
       type: String,
       required: true,
       unique: true,
+      lowercase: true, // add this
+      trim: true, //  add this
     },
 
     password: {
       type: String,
-      required: true,
+      //  removed required (important for Google users)
     },
 
     profilePic: {
       type: String,
       default: "",
     },
+
+    // ADD THIS (for Google login)
+    provider: {
+      type: String,
+      enum: ["local", "google"],
+      default: "local",
+    },
+
+    //(store Firebase UID)
+    googleId: {
+      type: String,
+    },
+
     role: {
       type: String,
       enum: ["user", "admin"],
@@ -42,7 +55,7 @@ const userSchema = mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 const User = mongoose.model("User", userSchema);

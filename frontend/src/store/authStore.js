@@ -1,6 +1,11 @@
 import { create } from "zustand";
 import { axiosInstance } from "../api/axios.js";
 import toast from "react-hot-toast";
+import { auth } from "../config/firebase";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { signOut } from "firebase/auth";
+const provider = new GoogleAuthProvider();
+import { sendPasswordResetEmail } from "firebase/auth";
 
 export const useAuthStore = create((set) => ({
   authUser: null,
@@ -8,6 +13,7 @@ export const useAuthStore = create((set) => ({
   isLoggingIn: false,
   isUpdatingProfile: false,
   isCheckingAuth: true,
+  loading: false,
 
   checkAuth: async () => {
     try {
@@ -49,8 +55,13 @@ export const useAuthStore = create((set) => ({
 
   logout: async () => {
     try {
+      // 🔥 Backend logout
       await axiosInstance.post("/users/logout");
+      // 🔥 Firebase logout (for Google users)
+      await signOut(auth).catch(() => {});
+      // Clear local auth state
       set({ authUser: null });
+
       toast.success("Logged out successfully!");
     } catch (error) {
       toast.error("Logout failed");
@@ -67,6 +78,50 @@ export const useAuthStore = create((set) => ({
       toast.error(error.response?.data?.message || "Update failed");
     } finally {
       set({ isUpdatingProfile: false });
+    }
+  },
+  // 🔵 Google Login
+
+  googleLogin: async () => {
+    try {
+      set({ loading: true });
+
+      const result = await signInWithPopup(auth, provider);
+      const firebaseUser = result.user;
+
+      const userData = {
+        uid: firebaseUser.uid,
+        name: firebaseUser.displayName,
+        email: firebaseUser.email,
+        photo: firebaseUser.photoURL,
+      };
+
+      const res = await axiosInstance.post("/users/google-login", userData);
+
+      set({ authUser: res.data, loading: false });
+
+      toast.success("Google login successful!");
+
+      return res.data; // ✅ ADD THIS
+    } catch (err) {
+      console.log(err);
+      set({ loading: false });
+      toast.error("Google login failed");
+    }
+  },
+  forgotPassword: async (email) => {
+    try {
+      set({ loading: true });
+
+      await sendPasswordResetEmail(auth, email);
+      toast.success("Password reset email sent!");
+
+      return true;
+    } catch (error) {
+      toast.error(error?.message || "Something went wrong");
+      return false;
+    } finally {
+      set({ loading: false });
     }
   },
 }));

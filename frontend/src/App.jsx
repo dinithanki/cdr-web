@@ -19,7 +19,7 @@ import AuthLayout from "./layouts/AuthLayout.jsx";
 import AdminProducts from "./pages/admin/AdminProducts.jsx";
 import AdminOrders from "./pages/admin/AdminOrders.jsx";
 import AdminSettings from "./pages/admin/AdminSettings.jsx";
-
+import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage.jsx";
 const App = () => {
   const { authUser, checkAuth, isCheckingAuth } = useAuthStore();
   useEffect(() => {
@@ -51,6 +51,7 @@ const App = () => {
         <Route element={<AuthLayout />}>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignUpPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         </Route>
 
         {/* ADMIN ROUTES */}

@@ -4,6 +4,7 @@ import { upload } from "../middlewares/uploadMiddleware.js";
 import { uploadProfilePic } from "../controllers/userController.js";
 import { protect, adminOnly } from "../middlewares/authMiddleware.js";
 import { checkAuth } from "../controllers/userController.js";
+import { googleLogin } from "../controllers/userController.js";
 import {
   getAllUsers,
   deleteUser,
@@ -17,6 +18,7 @@ router.post("/signup", signup);
 router.post("/login", login);
 router.post("/upload-profile-pic", upload.single("image"), uploadProfilePic);
 router.post("/logout", logout);
+router.post("/google-login", googleLogin);
 
 router.get("/", protect, adminOnly, getAllUsers);
 router.delete("/:id", protect, adminOnly, deleteUser);

@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuthStore } from "../../store/authStore.js";
 import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
   const { login, isLoggingIn } = useAuthStore();
+  const { googleLogin, loading } = useAuthStore();
+
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
@@ -35,6 +37,17 @@ const LoginPage = () => {
       console.log("User logged in, navigating to home");
     }
   };
+  const handleGoogleLogin = async () => {
+    const user = await googleLogin();
+
+    if (!user) return;
+
+    if (user.role === "admin") {
+      navigate("/admin/dashboard");
+    } else {
+      navigate("/");
+    }
+  };
 
   return (
     <div className="mt-72">
@@ -57,6 +70,17 @@ const LoginPage = () => {
 
         <button type="submit" disabled={isLoggingIn}>
           {isLoggingIn ? "Logging in..." : "Login"}
+        </button>
+        <span className="mx-2"> </span>
+        <button type="button" onClick={handleGoogleLogin} disabled={loading}>
+          {loading ? "Loading..." : "Continue with Google"}
+        </button>
+        <button
+          type="button"
+          onClick={() => navigate("/forgot-password")}
+          className="text-sm text-blue-600 hover:underline mt-2"
+        >
+          Forgot Password?
         </button>
       </form>
     </div>

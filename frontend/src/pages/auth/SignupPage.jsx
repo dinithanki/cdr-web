@@ -1,8 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuthStore } from "../../store/authStore.js";
+import { useNavigate } from "react-router-dom";
 
 const SignUpPage = () => {
-  const { signup, isSigningUp } = useAuthStore();
+  const { signup, isSigningUp, googleLogin, loading, authUser } =
+    useAuthStore();
+  const navigate = useNavigate();
 
   const [form, setForm] = useState({
     firstName: "",
@@ -10,6 +13,13 @@ const SignUpPage = () => {
     email: "",
     password: "",
   });
+  useEffect(() => {
+    if (authUser?.role === "admin") {
+      navigate("/admin/dashboard");
+    } else if (authUser) {
+      navigate("/");
+    }
+  }, [authUser, navigate]);
 
   const handleChange = (e) => {
     setForm({
@@ -26,6 +36,8 @@ const SignUpPage = () => {
 
     await signup(form);
   };
+
+  // Redirect to dashboard if user is already authenticated
 
   return (
     <div className="mt-72">
@@ -64,6 +76,14 @@ const SignUpPage = () => {
 
         <button type="submit" disabled={isSigningUp}>
           {isSigningUp ? "Signing up..." : "Sign Up"}
+        </button>
+        <button
+          className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+          type="button"
+          onClick={googleLogin}
+          disabled={loading}
+        >
+          {loading ? "Loading..." : "Continue with Google"}
         </button>
       </form>
     </div>

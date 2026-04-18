@@ -34,6 +34,7 @@ export const signup = async (req, res) => {
       email,
       password: hashedPassword,
       role: "user",
+      provider: "local",
     });
 
     await newUser.save();
@@ -70,6 +71,11 @@ export const login = async (req, res) => {
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({ message: "Invalid credentials" });
+    }
+    if (user.provider === "google" && !user.password) {
+      return res.status(400).json({
+        message: "Please login with Google",
+      });
     }
 
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
@@ -185,5 +191,70 @@ export const checkAuth = async (req, res) => {
   } catch (error) {
     console.error("Error in checkAuth controller:", error);
     res.status(500).json({ message: "Error in checkAuth controller" });
+  }
+};
+export const googleLogin = async (req, res) => {
+  try {
+    const { email, name, photo, uid } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ message: "Email is required" });
+    }
+
+    let user = await User.findOne({ email });
+
+    //If user exists → link Google if not linked
+    if (user) {
+      if (!user.googleId) {
+        user.googleId = uid;
+        await user.save();
+      }
+
+      generateToken(
+        {
+          id: user._id,
+          role: user.role,
+        },
+        res,
+      );
+
+      return res.status(200).json({
+        _id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        profilePic: user.profilePic,
+        role: user.role,
+      });
+    }
+
+    //New user → create account
+    user = await User.create({
+      email,
+      firstName: name,
+      profilePic: photo,
+      googleId: uid,
+      provider: "google",
+      role: "user",
+    });
+
+    generateToken(
+      {
+        id: user._id,
+        role: user.role,
+      },
+      res,
+    );
+
+    return res.status(201).json({
+      _id: user._id,
+      firstName: user.firstName,
+      email: user.email,
+      profilePic: user.profilePic,
+      role: user.role,
+    });
+  } catch (error) {
+    console.error("Error in googleLogin:", error);
+    res.status(500).json({ message: "Google login failed" });
   }
 };
