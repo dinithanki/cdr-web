@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { useAuthStore } from "../../store/authStore.js";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
   const { login, isLoggingIn } = useAuthStore();
+  const navigate = useNavigate();
 
   const [form, setForm] = useState({
     email: "",
@@ -22,7 +23,17 @@ const LoginPage = () => {
 
     if (!form.email || !form.password) return;
 
-    await login(form);
+    console.log("Login successful, checking user role...");
+    const user = await login(form);
+    console.log("Logged in user:", user);
+
+    if (user?.role === "admin") {
+      console.log("Admin logged in, navigating to dashboard");
+      navigate("/admin/dashboard");
+    } else {
+      navigate("/");
+      console.log("User logged in, navigating to home");
+    }
   };
 
   return (

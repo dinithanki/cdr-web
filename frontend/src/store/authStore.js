@@ -39,6 +39,7 @@ export const useAuthStore = create((set) => ({
       const res = await axiosInstance.post("/users/login", data);
       set({ authUser: res.data });
       toast.success("Logged in successfully!");
+      return res.data;
     } catch (error) {
       toast.error(error.response?.data?.message || "Login failed");
     } finally {

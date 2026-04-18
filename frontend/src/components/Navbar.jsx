@@ -44,15 +44,7 @@ const Navbar = () => {
                 <User className="size-4" />
                 <span className="hidden sm:inline">Profile</span>
               </Link>
-              {isUser && (
-                <Link
-                  to="/cart"
-                  className="btn btn-sm flex items-center gap-2 px-3"
-                >
-                  <ShoppingBag className="size-4" />
-                  <span className="hidden sm:inline">Cart</span>
-                </Link>
-              )}
+
               <button
                 onClick={logout}
                 className="btn btn-sm flex items-center gap-2 px-3 hover:cursor-pointer"
@@ -62,6 +54,10 @@ const Navbar = () => {
               </button>
             </>
           )}
+          <Link to="/cart" className="btn btn-sm flex items-center gap-2 px-3">
+            <ShoppingBag className="size-4" />
+            <span className="hidden sm:inline">Cart</span>
+          </Link>
         </div>
       </div>
     </header>
