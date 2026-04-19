@@ -16,36 +16,68 @@ const ForgotPasswordPage = () => {
   };
 
   return (
-    <div className="flex items-center justify-center h-screen">
-      <form
-        onSubmit={handleSubmit}
-        className="p-6 bg-white shadow rounded w-96"
-      >
-        <h2 className="text-xl font-bold mb-4">Forgot Password</h2>
+    <div className="min-h-screen flex">
+      {/* LEFT SIDE - FORM */}
+      <div className="w-full md:w-1/2 flex items-center justify-center bg-white px-6">
+        <div className="w-full max-w-md">
+          {/* Title */}
+          <h2 className="text-3xl font-bold text-gray-800">
+            Forgot Password 🔐
+          </h2>
+          <p className="text-gray-500 mt-1">
+            Enter your email to receive a reset link
+          </p>
 
-        <input
-          type="email"
-          placeholder="Enter email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="w-full border p-2 mb-4"
-          required
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+            <input
+              type="email"
+              placeholder="Email address"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+            />
+
+            {/* Submit */}
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-orange-500 text-white py-3 rounded-lg hover:bg-orange-600 transition font-semibold"
+            >
+              {loading ? "Sending..." : "Send Reset Link"}
+            </button>
+          </form>
+
+          {/* Back to login */}
+          <p className="text-sm text-center text-gray-500 mt-4">
+            Remember your password?{" "}
+            <span
+              onClick={() => navigate("/login")}
+              className="text-orange-500 cursor-pointer hover:underline"
+            >
+              Back to Login
+            </span>
+          </p>
+        </div>
+      </div>
+
+      {/* RIGHT SIDE - IMAGE */}
+      <div className="hidden md:flex w-1/2 relative">
+        <img
+          src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4"
+          alt="restaurant"
+          className="w-full h-full object-cover"
         />
 
-        <button
-          disabled={loading}
-          className="w-full bg-blue-600 text-white p-2"
-        >
-          {loading ? "Sending..." : "Send Reset Link"}
-        </button>
-
-        <p
-          onClick={() => navigate("/login")}
-          className="text-sm text-center mt-3 cursor-pointer"
-        >
-          Back to login
-        </p>
-      </form>
+        {/* Overlay */}
+        <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+          <div className="text-center text-white px-6">
+            <h1 className="text-4xl font-bold">Secure Your Account 🔒</h1>
+            <p className="mt-3 text-lg">We’ll help you get back in safely</p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

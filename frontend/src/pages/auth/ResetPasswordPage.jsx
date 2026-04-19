@@ -44,46 +44,79 @@ const ResetPasswordPage = () => {
   };
 
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-100">
-      <form
-        onSubmit={handleSubmit}
-        className="w-96 bg-white p-6 rounded-lg shadow-md"
-      >
-        <h2 className="text-2xl font-bold mb-4 text-center">Reset Password</h2>
+    <div className="min-h-screen flex">
+      {/* LEFT SIDE - FORM */}
+      <div className="w-full md:w-1/2 flex items-center justify-center bg-white px-6">
+        <div className="w-full max-w-md">
+          {/* Title */}
+          <h2 className="text-3xl font-bold text-gray-800">
+            Reset Password 🔑
+          </h2>
+          <p className="text-gray-500 mt-1">Enter your new password below</p>
 
-        <input
-          type="password"
-          placeholder="New Password"
-          className="w-full border p-2 rounded mb-3"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+            {/* New Password */}
+            <input
+              type="password"
+              placeholder="New Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+            />
+
+            {/* Confirm Password */}
+            <input
+              type="password"
+              placeholder="Confirm Password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+              className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+            />
+
+            {/* Submit */}
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-orange-500 text-white py-3 rounded-lg hover:bg-orange-600 transition font-semibold disabled:opacity-50"
+            >
+              {loading ? "Updating..." : "Reset Password"}
+            </button>
+          </form>
+
+          {/* Back to login */}
+          <p className="text-sm text-center text-gray-500 mt-4">
+            Remember your password?{" "}
+            <span
+              onClick={() => navigate("/login")}
+              className="text-orange-500 cursor-pointer hover:underline"
+            >
+              Back to Login
+            </span>
+          </p>
+        </div>
+      </div>
+
+      {/* RIGHT SIDE - IMAGE */}
+      <div className="hidden md:flex w-1/2 relative">
+        <img
+          src="https://images.unsplash.com/photo-1504674900247-0877df9cc836"
+          alt="restaurant"
+          className="w-full h-full object-cover"
         />
 
-        <input
-          type="password"
-          placeholder="Confirm Password"
-          className="w-full border p-2 rounded mb-4"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          required
-        />
-
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-green-600 text-white p-2 rounded hover:bg-green-700 disabled:opacity-50"
-        >
-          {loading ? "Updating..." : "Reset Password"}
-        </button>
-
-        <p
-          onClick={() => navigate("/login")}
-          className="text-sm text-center mt-4 text-gray-500 cursor-pointer hover:underline"
-        >
-          Back to Login
-        </p>
-      </form>
+        {/* Overlay */}
+        <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+          <div className="text-center text-white px-6">
+            <h1 className="text-4xl font-bold">Fresh Start 🔄</h1>
+            <p className="mt-3 text-lg">
+              Secure your account with a new password
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

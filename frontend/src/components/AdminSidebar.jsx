@@ -5,6 +5,7 @@ import {
   ShoppingBag,
   Settings,
   LogOut,
+  Utensils,
 } from "lucide-react";
 
 import { useAuthStore } from "../store/authStore.js";
@@ -48,10 +49,16 @@ const AdminSidebar = () => {
             isActive("/admin/products") ? "bg-base-300 font-semibold" : ""
           }`}
         >
-          <ShoppingBag size={18} />
+          <Utensils size={18} />
           Products
         </Link>
-
+        <Link
+          to="/admin/orders"
+          className={`flex items-center gap-2 p-2 rounded hover:bg-base-300 ${isActive("/admin/orders") ? "bg-base-300 font-semibold" : ""}`}
+        >
+          <ShoppingBag size={18} />
+          Orders
+        </Link>
         <Link
           to="/admin/settings"
           className={`flex items-center gap-2 p-2 rounded hover:bg-base-300 ${

@@ -1,13 +1,13 @@
 import { useAuthStore } from "../store/authStore.js";
 import { Link } from "react-router-dom";
-import { MessageSquare, User, LogOut, ShoppingBag } from "lucide-react";
+import { UtensilsCrossed, User, LogOut, ShoppingBag } from "lucide-react";
 
 const Navbar = () => {
   const { logout, authUser } = useAuthStore();
   const isAdmin = authUser?.role === "admin";
   const isUser = authUser?.role === "user";
   return (
-    <header className="fixed top-0 z-40 w-full border-b border-base-300 bg-base-100/80 backdrop-blur-lg bg-red-600">
+    <header className="fixed top-0 z-40 w-full border-b border-base-300 bg-base-100/80 backdrop-blur-lg bg-red-600 text-amber-50">
       <div className="container mx-auto px-6 h-16 flex items-center justify-between">
         {/* LEFT - Logo */}
         <Link
@@ -15,9 +15,9 @@ const Navbar = () => {
           className="flex items-center gap-3 hover:opacity-80 transition"
         >
           <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center">
-            <MessageSquare className="w-5 h-5 text-primary" />
+            <UtensilsCrossed className="w-5 h-5 text-primary" />
           </div>
-          <h1 className="text-lg font-semibold tracking-tight">Dinith</h1>
+          <h1 className="text-lg font-semibold tracking-tight">Dragon Dine</h1>
         </Link>
 
         {/* RIGHT - Actions */}
