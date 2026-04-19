@@ -1,7 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import HomePage from "./pages/public/HomePage.jsx";
-import Login from "./pages/auth/LoginPage.jsx";
 import { Toaster } from "react-hot-toast";
 import LoginPage from "./pages/auth/LoginPage.jsx";
 import { useAuthStore } from "./store/authStore.js";
