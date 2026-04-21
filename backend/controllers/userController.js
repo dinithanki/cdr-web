@@ -5,6 +5,17 @@ import { generateToken } from "../utils/generateToken.js";
 import crypto from "crypto";
 import { sendEmail } from "../services/emailService.js";
 
+const serializeUser = (user) => ({
+  _id: user._id,
+  firstName: user.firstName,
+  lastName: user.lastName,
+  email: user.email,
+  profilePic: user.profilePic,
+  phoneNumber: user.phoneNumber,
+  address: user.address,
+  role: user.role,
+});
+
 export const signup = async (req, res) => {
   try {
     const { firstName, lastName, email, password } = req.body;
@@ -49,14 +60,7 @@ export const signup = async (req, res) => {
       res,
     );
 
-    return res.status(201).json({
-      _id: newUser._id,
-      firstName: newUser.firstName,
-      lastName: newUser.lastName,
-      email: newUser.email,
-      profilePic: newUser.profilePic,
-      role: newUser.role,
-    });
+    return res.status(201).json(serializeUser(newUser));
   } catch (error) {
     console.error("Error in signup controller:", error);
     res.status(500).json({ message: "Error in signup controller" });
@@ -94,14 +98,7 @@ export const login = async (req, res) => {
     );
     console.log("User logged in:", user.email);
 
-    return res.status(200).json({
-      _id: user._id,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-      profilePic: user.profilePic,
-      role: user.role,
-    });
+    return res.status(200).json(serializeUser(user));
   } catch (error) {
     console.error("Error in login controller:", error);
     res.status(500).json({ message: "Error in login controller" });
@@ -165,7 +162,7 @@ export const makeAdmin = async (req, res) => {
 };
 export const checkAuth = async (req, res) => {
   try {
-    res.status(200).json(req.user);
+    res.status(200).json(serializeUser(req.user));
   } catch (error) {
     console.error("Error in checkAuth controller:", error);
     res.status(500).json({ message: "Error in checkAuth controller" });
@@ -196,14 +193,7 @@ export const googleLogin = async (req, res) => {
         res,
       );
 
-      return res.status(200).json({
-        _id: user._id,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        profilePic: user.profilePic,
-        role: user.role,
-      });
+      return res.status(200).json(serializeUser(user));
     }
 
     //New user → create account
@@ -224,13 +214,7 @@ export const googleLogin = async (req, res) => {
       res,
     );
 
-    return res.status(201).json({
-      _id: user._id,
-      firstName: user.firstName,
-      email: user.email,
-      profilePic: user.profilePic,
-      role: user.role,
-    });
+    return res.status(201).json(serializeUser(user));
   } catch (error) {
     console.error("Error in googleLogin:", error);
     res.status(500).json({ message: "Google login failed" });
@@ -330,7 +314,7 @@ export const updateProfile = async (req, res) => {
     }).select("-password");
 
     // 🟢 4. Return updated user
-    res.json(updatedUser);
+    res.json(serializeUser(updatedUser));
   } catch (error) {
     res.status(500).json({
       message: error.message || "Profile update failed",
