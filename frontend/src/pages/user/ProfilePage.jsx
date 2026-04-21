@@ -42,6 +42,18 @@ function ProfilePage() {
       <p>
         <strong>Role:</strong> {authUser.role || "user"}
       </p>
+      <p>
+        <strong>Joined:</strong>{" "}
+        {authUser.createdAt
+          ? new Date(authUser.createdAt).toLocaleDateString()
+          : "-"}
+      </p>
+      <p>
+        <strong>Phone Number:</strong> {authUser.phoneNumber || "-"}
+      </p>
+      <p>
+        <strong>Address:</strong> {authUser.address || "-"}
+      </p>
     </div>
   );
 }
