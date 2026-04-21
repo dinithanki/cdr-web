@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import { generateToken } from "../utils/generateToken.js";
 import crypto from "crypto";
 import { sendEmail } from "../services/emailService.js";
+
 export const signup = async (req, res) => {
   try {
     const { firstName, lastName, email, password } = req.body;
@@ -106,31 +107,7 @@ export const login = async (req, res) => {
     res.status(500).json({ message: "Error in login controller" });
   }
 };
-export const uploadProfilePic = async (req, res) => {
-  try {
-    const file = req.file;
 
-    if (!req.user || !req.user.id) {
-      return res.status(401).json({ message: "Unauthorized" });
-    }
-
-    if (!file) {
-      return res.status(400).json({ message: "No file uploaded" });
-    }
-
-    const imageUrl = await uploadProfileImage(file);
-
-    const user = await User.findByIdAndUpdate(
-      req.user.id,
-      { profilePic: imageUrl },
-      { new: true },
-    );
-
-    res.json(user);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
 export const logout = (req, res) => {
   try {
     res.clearCookie("jwt", {
@@ -314,5 +291,49 @@ export const resetPassword = async (req, res) => {
     res.json({ message: "Password updated successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+
+export const updateProfile = async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    const { firstName, lastName, phoneNumber, address } = req.body;
+
+    let imageUrl;
+
+    // 🟢 1. Upload image if exists
+    if (req.file) {
+      imageUrl = await uploadProfileImage(req.file);
+    }
+
+    // 🟢 2. Build update object
+    // 🟢 2. Build update object (SAFE VERSION)
+    const updateData = {};
+
+    if (firstName) updateData.firstName = firstName;
+    if (lastName) updateData.lastName = lastName;
+    if (phoneNumber) updateData.phoneNumber = phoneNumber;
+    if (address) updateData.address = address;
+
+    if (imageUrl) {
+      updateData.profilePic = imageUrl;
+    }
+
+    if (imageUrl) {
+      updateData.profilePic = imageUrl;
+    }
+
+    // 🟢 3. Update DB
+    const updatedUser = await User.findByIdAndUpdate(userId, updateData, {
+      new: true,
+    }).select("-password");
+
+    // 🟢 4. Return updated user
+    res.json(updatedUser);
+  } catch (error) {
+    res.status(500).json({
+      message: error.message || "Profile update failed",
+    });
   }
 };
