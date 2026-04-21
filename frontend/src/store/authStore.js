@@ -68,18 +68,18 @@ export const useAuthStore = create((set) => ({
     }
   },
 
-  updateProfile: async (data) => {
-    set({ isUpdatingProfile: true });
-    try {
-      const res = await axiosInstance.put("/users/update-profile", data);
-      set({ authUser: res.data });
-      toast.success("Profile updated!");
-    } catch (error) {
-      toast.error(error.response?.data?.message || "Update failed");
-    } finally {
-      set({ isUpdatingProfile: false });
-    }
-  },
+  // updateProfile: async (data) => {
+  //   set({ isUpdatingProfile: true });
+  //   try {
+  //     const res = await axiosInstance.put("/users/update-profile", data);
+  //     set({ authUser: res.data });
+  //     toast.success("Profile updated!");
+  //   } catch (error) {
+  //     toast.error(error.response?.data?.message || "Update failed");
+  //   } finally {
+  //     set({ isUpdatingProfile: false });
+  //   }
+  // },
   googleLogin: async () => {
     try {
       set({ loading: true });
@@ -121,6 +121,21 @@ export const useAuthStore = create((set) => ({
       return false;
     } finally {
       set({ loading: false });
+    }
+  },
+  updateProfile: async (data) => {
+    set({ isUpdatingProfile: true });
+
+    try {
+      const res = await axiosInstance.put("/users/update-profile", data);
+
+      set({ authUser: res.data }); // update UI globally
+
+      toast.success("Profile updated!");
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Update failed");
+    } finally {
+      set({ isUpdatingProfile: false });
     }
   },
 }));
