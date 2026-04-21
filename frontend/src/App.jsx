@@ -20,6 +20,8 @@ import AdminOrders from "./pages/admin/AdminOrders.jsx";
 import AdminSettings from "./pages/admin/AdminSettings.jsx";
 import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage.jsx";
 import ResetPasswordPage from "./pages/auth/ResetPasswordPage.jsx";
+import AdminProfile from "./pages/admin/AdminProfile.jsx";
+import AdminProfileEdit from "./pages/admin/AdminProfileEdit.jsx";
 const App = () => {
   const { authUser, checkAuth, isCheckingAuth } = useAuthStore();
   useEffect(() => {
@@ -44,7 +46,10 @@ const App = () => {
         <Route element={<UserLayout />}>
           <Route path="/" element={<HomePage />} />
           <Route path="/cart" element={<Cart />} />
-          <Route path="/profile" element={<ProfilePage />} />
+          <Route
+            path="/profile"
+            element={authUser ? <ProfilePage /> : <Navigate to="/login" />}
+          />
         </Route>
 
         {/* AUTH ROUTES */}
@@ -70,6 +75,8 @@ const App = () => {
           <Route path="products" element={<AdminProducts />} />
           <Route path="orders" element={<AdminOrders />} />
           <Route path="settings" element={<AdminSettings />} />
+          <Route path="profile" element={<AdminProfile />} />
+          <Route path="profile/edit" element={<AdminProfileEdit />} />
         </Route>
       </Routes>
     </div>
