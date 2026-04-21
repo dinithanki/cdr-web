@@ -1,61 +1,69 @@
-import { useEffect } from "react";
-import { useAuthStore } from "../../store/authStore";
+import { useState } from "react";
+import { useAuthStore } from "../../store/authStore.js";
+import EditProfile from "./EditProfile";
 
-function ProfilePage() {
-  const { authUser, checkAuth, isCheckingAuth } = useAuthStore();
-
-  useEffect(() => {
-    if (!authUser) {
-      checkAuth();
-    }
-  }, [authUser, checkAuth]);
-
-  if (isCheckingAuth) {
-    return <div className="p-6">Loading profile...</div>;
-  }
+export default function ProfilePage() {
+  const { authUser, logout } = useAuthStore();
+  const [editMode, setEditMode] = useState(false);
 
   if (!authUser) {
-    return <div className="p-6">Please login to see your profile.</div>;
+    return (
+      <div className="flex items-center justify-center h-screen text-gray-500">
+        Loading profile...
+      </div>
+    );
   }
 
   return (
-    <div className="p-6 max-w-md mx-auto mt-12">
-      <h1 className="text-2xl font-bold mb-4">My Profile</h1>
+    <div className="max-w-2xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-2xl mt-36">
+      {!editMode ? (
+        <div className="flex flex-col items-center text-center space-y-4 ">
+          {/* Profile Image */}
+          <img
+            src={authUser.profilePic}
+            alt="profile"
+            className="w-28 h-28 rounded-full object-cover border-4 border-gray-200"
+          />
 
-      {authUser.profilePic ? (
-        <img
-          src={authUser.profilePic}
-          alt="Profile"
-          className="w-24 h-24 rounded-full object-cover mb-4"
-        />
-      ) : null}
+          {/* User Info */}
+          <h2 className="text-2xl font-semibold">
+            {authUser.firstName} {authUser.lastName}c
+          </h2>
 
-      <p>
-        <strong>First Name:</strong> {authUser.firstName || "-"}
-      </p>
-      <p>
-        <strong>Last Name:</strong> {authUser.lastName || "-"}
-      </p>
-      <p>
-        <strong>Email:</strong> {authUser.email || "-"}
-      </p>
-      <p>
-        <strong>Role:</strong> {authUser.role || "user"}
-      </p>
-      <p>
-        <strong>Joined:</strong>{" "}
-        {authUser.createdAt
-          ? new Date(authUser.createdAt).toLocaleDateString()
-          : "-"}
-      </p>
-      <p>
-        <strong>Phone Number:</strong> {authUser.phoneNumber || "-"}
-      </p>
-      <p>
-        <strong>Address:</strong> {authUser.address || "-"}
-      </p>
+          <div className="text-gray-600 space-y-1">
+            <p>
+              <span className="font-medium">Email:</span> {authUser.email}
+            </p>
+            <p>
+              <span className="font-medium">Phone:</span>{" "}
+              {authUser.phoneNumber || "Not set"}
+            </p>
+            <p>
+              <span className="font-medium">Address:</span>{" "}
+              {authUser.address || "Not set"}
+            </p>
+          </div>
+
+          {/* Buttons */}
+          <div className="flex gap-4 mt-4">
+            <button
+              onClick={() => setEditMode(true)}
+              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
+            >
+              Edit Profile
+            </button>
+
+            <button
+              onClick={logout}
+              className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
+            >
+              Logout
+            </button>
+          </div>
+        </div>
+      ) : (
+        <EditProfile setEditMode={setEditMode} />
+      )}
     </div>
   );
 }
-
-export default ProfilePage;
