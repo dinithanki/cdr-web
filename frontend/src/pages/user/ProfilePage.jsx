@@ -42,6 +42,27 @@ export default function ProfilePage() {
               <span className="font-medium">Address:</span>{" "}
               {authUser.address || "Not set"}
             </p>
+            <p>
+              <span className="font-medium">Joined:</span>{" "}
+              {authUser.createdAt
+                ? new Date(authUser.createdAt).toLocaleDateString()
+                : "Not available"}
+            </p>
+            <p>
+              <span className="font-medium">Role</span> {authUser.role}
+            </p>
+            <p>
+              <span className="font-medium">Account Status</span>
+              {authUser?.isBlocked ? (
+                <span className="ml-2 px-2 py-1 text-xs bg-red-100 text-red-600 rounded-full">
+                  Blocked
+                </span>
+              ) : (
+                <span className="ml-2 px-2 py-1 text-xs bg-green-100 text-green-600 rounded-full">
+                  Active
+                </span>
+              )}
+            </p>
           </div>
 
           {/* Buttons */}

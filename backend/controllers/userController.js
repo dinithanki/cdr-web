@@ -14,6 +14,8 @@ const serializeUser = (user) => ({
   phoneNumber: user.phoneNumber,
   address: user.address,
   role: user.role,
+  isBlocked: user.isBlocked,
+  createdAt: user.createdAt,
 });
 
 export const signup = async (req, res) => {
