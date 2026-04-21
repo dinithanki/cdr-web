@@ -27,7 +27,7 @@ export default function ProfilePage() {
 
           {/* User Info */}
           <h2 className="text-2xl font-semibold">
-            {authUser.firstName} {authUser.lastName}c
+            {authUser.firstName} {authUser.lastName}
           </h2>
 
           <div className="text-gray-600 space-y-1">
