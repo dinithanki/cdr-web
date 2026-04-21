@@ -68,6 +68,15 @@ const AdminSidebar = () => {
           <Settings size={18} />
           Settings
         </Link>
+        <Link
+          to="/admin/profile"
+          className={`flex items-center gap-2 p-2 rounded hover:bg-base-300 ${
+            isActive("/admin/profile") ? "bg-base-300 font-semibold" : ""
+          }`}
+        >
+          <Settings size={18} />
+          Profile
+        </Link>
       </nav>
 
       {/* LOGOUT (BOTTOM) */}
