@@ -323,3 +323,51 @@ export const updateProfile = async (req, res) => {
     });
   }
 };
+export const adminUpdateUser = async (req, res) => {
+  try {
+    const userId = req.params.id;
+
+    const {
+      firstName,
+      lastName,
+      email,
+      phoneNumber,
+      address,
+      role,
+      status, // 👈 ADD THIS
+    } = req.body;
+
+    let imageUrl;
+
+    if (req.file) {
+      imageUrl = await uploadProfileImage(req.file);
+    }
+
+    const updateData = {};
+
+    if (firstName) updateData.firstName = firstName;
+    if (lastName) updateData.lastName = lastName;
+    if (email) updateData.email = email;
+    if (phoneNumber) updateData.phoneNumber = phoneNumber;
+    if (address) updateData.address = address;
+
+    if (role) updateData.role = role;
+
+    // 👇 NEW: user status control
+    if (status) updateData.status = status;
+
+    if (imageUrl) {
+      updateData.profilePic = imageUrl;
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(userId, updateData, {
+      new: true,
+    }).select("-password");
+
+    res.json(serializeUser(updatedUser));
+  } catch (error) {
+    res.status(500).json({
+      message: error.message || "Admin update failed",
+    });
+  }
+};
