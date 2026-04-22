@@ -54,6 +54,9 @@ export const useAuthStore = create((set) => ({
   },
 
   logout: async () => {
+    const confirmLogout = window.confirm("Are you sure you want to logout?");
+
+    if (!confirmLogout) return; // stop if user clicks Cancel
     try {
       // 🔥 Backend logout
       await axiosInstance.post("/users/logout");
@@ -68,18 +71,6 @@ export const useAuthStore = create((set) => ({
     }
   },
 
-  // updateProfile: async (data) => {
-  //   set({ isUpdatingProfile: true });
-  //   try {
-  //     const res = await axiosInstance.put("/users/update-profile", data);
-  //     set({ authUser: res.data });
-  //     toast.success("Profile updated!");
-  //   } catch (error) {
-  //     toast.error(error.response?.data?.message || "Update failed");
-  //   } finally {
-  //     set({ isUpdatingProfile: false });
-  //   }
-  // },
   googleLogin: async () => {
     try {
       set({ loading: true });
