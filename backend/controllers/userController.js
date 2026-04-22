@@ -334,7 +334,8 @@ export const adminUpdateUser = async (req, res) => {
       phoneNumber,
       address,
       role,
-      status, // 👈 ADD THIS
+      isBlocked,
+      status,
     } = req.body;
 
     let imageUrl;
@@ -353,8 +354,10 @@ export const adminUpdateUser = async (req, res) => {
 
     if (role) updateData.role = role;
 
-    // 👇 NEW: user status control
-    if (status) updateData.status = status;
+    if (typeof isBlocked === "boolean") updateData.isBlocked = isBlocked;
+    if (typeof status === "string") {
+      updateData.isBlocked = status.toLowerCase() === "blocked";
+    }
 
     if (imageUrl) {
       updateData.profilePic = imageUrl;
