@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { useAdminStore } from "../../store/adminStore.js";
+import { useAuthStore } from "../../store/authStore.js";
 
 export default function AdminUsers() {
   const { users, loading, getUsers, deleteUser, updateUser } = useAdminStore();
+  const { authUser } = useAuthStore();
   const [selectedUser, setSelectedUser] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
   const [formData, setFormData] = useState({
@@ -181,6 +183,7 @@ export default function AdminUsers() {
                 name="role"
                 value={formData.role}
                 onChange={handleChange}
+                disabled={selectedUser._id === authUser?._id}
                 className="w-full rounded-lg border px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
               >
                 <option value="user">User</option>
@@ -195,7 +198,7 @@ export default function AdminUsers() {
                 >
                   Cancel
                 </button>
-                <button
+                <button. 
                   type="submit"
                   disabled={isSaving}
                   className="rounded-lg bg-green-500 px-4 py-2 text-white transition hover:bg-green-600 disabled:opacity-50"
