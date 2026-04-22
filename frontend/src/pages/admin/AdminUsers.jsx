@@ -158,7 +158,7 @@ export default function AdminUsers() {
                 onChange={handleChange}
                 placeholder="Email"
                 disabled
-                className="w-full rounded-lg border px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className="w-full rounded-lg border px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:bg-gray-100 disabled:text-gray-500 "
               />
 
               <input
@@ -184,7 +184,7 @@ export default function AdminUsers() {
                 value={formData.role}
                 onChange={handleChange}
                 disabled={selectedUser._id === authUser?._id}
-                className="w-full rounded-lg border px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className="w-full rounded-lg border px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:bg-gray-100 disabled:text-gray-500"
               >
                 <option value="user">User</option>
                 <option value="admin">Admin</option>
@@ -198,7 +198,7 @@ export default function AdminUsers() {
                 >
                   Cancel
                 </button>
-                <button. 
+                <button
                   type="submit"
                   disabled={isSaving}
                   className="rounded-lg bg-green-500 px-4 py-2 text-white transition hover:bg-green-600 disabled:opacity-50"
