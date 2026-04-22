@@ -4,6 +4,7 @@ import {
   login,
   logout,
   updateProfile,
+  adminUpdateUser,
 } from "../controllers/userController.js";
 import { upload } from "../middlewares/uploadMiddleware.js";
 import { protect, adminOnly } from "../middlewares/authMiddleware.js";
@@ -20,6 +21,8 @@ import {
 
 const router = express.Router();
 
+router.get("/check", protect, checkAuth);
+
 router.post("/signup", signup);
 router.post("/login", login);
 router.post("/logout", logout);
@@ -33,6 +36,6 @@ router.get("/", protect, adminOnly, getAllUsers);
 router.delete("/:id", protect, adminOnly, deleteUser);
 router.put("/:id", protect, adminOnly, updateUser);
 router.patch("/make-admin/:id", protect, adminOnly, makeAdmin);
-router.get("/check", protect, checkAuth);
+router.put("/admin-update/:id", protect, adminOnly, adminUpdateUser);
 
 export default router;
