@@ -67,10 +67,6 @@ const userSchema = mongoose.Schema(
       type: String,
       default: "",
     },
-    isBlocked: {
-      type: Boolean,
-      default: false,
-    },
   },
   {
     timestamps: true,
