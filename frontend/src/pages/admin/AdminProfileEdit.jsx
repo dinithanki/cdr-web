@@ -44,6 +44,13 @@ export default function AdminProfileEdit({ setEditMode }) {
       </h2>
 
       <form onSubmit={handleSubmit} className="space-y-4">
+        {/* 🔒 EMAIL (READ ONLY) */}
+        <input
+          value={authUser?.email || ""}
+          disabled
+          className="w-full px-4 py-2 border rounded-lg bg-gray-100 cursor-not-allowed"
+        />
+
         <input
           name="firstName"
           value={formData.firstName}
