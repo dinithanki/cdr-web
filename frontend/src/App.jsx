@@ -22,6 +22,7 @@ import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage.jsx";
 import ResetPasswordPage from "./pages/auth/ResetPasswordPage.jsx";
 import AdminProfile from "./pages/admin/AdminProfile.jsx";
 import AdminProfileEdit from "./pages/admin/AdminProfileEdit.jsx";
+import ProductsPage from "./pages/product/ProductsPage.jsx";
 const App = () => {
   const { authUser, checkAuth, isCheckingAuth } = useAuthStore();
   useEffect(() => {
@@ -46,6 +47,8 @@ const App = () => {
         <Route element={<UserLayout />}>
           <Route path="/" element={<HomePage />} />
           <Route path="/cart" element={<Cart />} />
+          <Route path="/products" element={<ProductsPage />} />
+
           <Route
             path="/profile"
             element={authUser ? <ProfilePage /> : <Navigate to="/login" />}

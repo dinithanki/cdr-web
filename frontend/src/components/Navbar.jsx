@@ -4,42 +4,56 @@ import { UtensilsCrossed, User, LogOut, ShoppingBag } from "lucide-react";
 
 const Navbar = () => {
   const { logout, authUser } = useAuthStore();
-  const isAdmin = authUser?.role === "admin";
-  const isUser = authUser?.role === "user";
+
   return (
-    <header className="fixed top-0 z-40 w-full border-b border-base-300 bg-base-100/80 backdrop-blur-lg bg-red-600 text-amber-50">
-      <div className="container mx-auto px-6 h-16 flex items-center justify-between">
+    <header className="fixed top-0 left-0 z-50 w-full bg-linear-to-r from-orange-600 to-red-600 text-white shadow-lg">
+      <div className="container mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         {/* LEFT - Logo */}
         <Link
           to="/"
-          className="flex items-center gap-3 hover:opacity-80 transition"
+          className="flex items-center gap-2 hover:opacity-90 transition"
         >
-          <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center">
-            <UtensilsCrossed className="w-5 h-5 text-primary" />
+          <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
+            <UtensilsCrossed className="w-6 h-6 text-white" />
           </div>
-          <h1 className="text-lg font-semibold tracking-tight">Dragon Dine</h1>
+          <div className="hidden sm:block">
+            <h1 className="text-xl font-bold tracking-tight">Dragon Dine</h1>
+            <p className="text-xs text-orange-100">Premium Food Delivery</p>
+          </div>
         </Link>
 
         {/* RIGHT - Actions */}
-
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-4">
           {!authUser && (
             <>
-              <Link to="/login" className="btn btn-sm px-4">
+              <Link
+                to="/login"
+                className="hidden sm:inline-block px-4 py-1.5 text-sm font-medium rounded-lg hover:bg-white/20 transition"
+              >
                 Login
               </Link>
-
-              <Link to="/signup" className="btn btn-sm btn-primary px-4">
+              <Link
+                to="/signup"
+                className="hidden sm:inline-block px-4 py-1.5 text-sm font-medium bg-white text-orange-600 rounded-lg hover:bg-orange-50 transition"
+              >
                 Sign Up
               </Link>
             </>
           )}
 
+          <Link
+            to="/products"
+            className="inline-flex items-center gap-1.5 px-2.5 sm:px-4 py-1.5 text-sm font-medium rounded-lg hover:bg-white/20 transition"
+          >
+            <UtensilsCrossed className="size-4" />
+            <span className="hidden sm:inline">Menu</span>
+          </Link>
+
           {authUser && (
             <>
               <Link
                 to="/profile"
-                className="btn btn-sm flex items-center gap-2 px-3"
+                className="hidden sm:inline-flex items-center gap-1.5 px-2.5 sm:px-4 py-1.5 text-sm font-medium rounded-lg hover:bg-white/20 transition"
               >
                 <User className="size-4" />
                 <span className="hidden sm:inline">Profile</span>
@@ -47,14 +61,18 @@ const Navbar = () => {
 
               <button
                 onClick={logout}
-                className="btn btn-sm flex items-center gap-2 px-3 hover:cursor-pointer"
+                className="hidden sm:inline-flex items-center gap-1.5 px-2.5 sm:px-4 py-1.5 text-sm font-medium rounded-lg hover:bg-white/20 transition"
               >
                 <LogOut className="size-4" />
                 <span className="hidden sm:inline">Logout</span>
               </button>
             </>
           )}
-          <Link to="/cart" className="btn btn-sm flex items-center gap-2 px-3">
+
+          <Link
+            to="/cart"
+            className="inline-flex items-center gap-1.5 px-2.5 sm:px-4 py-1.5 text-sm font-medium bg-white/20 rounded-lg hover:bg-white/30 transition"
+          >
             <ShoppingBag className="size-4" />
             <span className="hidden sm:inline">Cart</span>
           </Link>

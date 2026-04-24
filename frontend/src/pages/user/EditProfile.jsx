@@ -38,59 +38,62 @@ export default function EditProfile({ setEditMode }) {
   };
 
   return (
-    <div className="max-w-xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-2xl animate-fadeIn ">
-      <h2 className="text-2xl font-semibold text-center mb-6">Edit Profile</h2>
+    <div className="mx-auto w-full max-w-3xl rounded-3xl border border-orange-100 bg-white/95 p-6 shadow-xl backdrop-blur-sm sm:p-8">
+      <h2 className="mb-2 text-2xl font-bold text-slate-900">Edit Profile</h2>
+      <p className="mb-6 text-sm text-slate-500">
+        Update your details to keep your delivery experience smooth.
+      </p>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {/* First Name */}
+      <form onSubmit={handleSubmit} className="grid gap-4 sm:grid-cols-2">
         <input
           name="firstName"
           value={formData.firstName}
           onChange={handleChange}
           placeholder="First Name"
-          className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+          className="w-full rounded-xl border border-orange-200 bg-orange-50/40 px-4 py-2.5 text-sm text-slate-900 outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-200"
         />
 
-        {/* Last Name */}
         <input
           name="lastName"
           value={formData.lastName}
           onChange={handleChange}
           placeholder="Last Name"
-          className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+          className="w-full rounded-xl border border-orange-200 bg-orange-50/40 px-4 py-2.5 text-sm text-slate-900 outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-200"
         />
 
-        {/* Phone */}
         <input
           name="phoneNumber"
           value={formData.phoneNumber}
           onChange={handleChange}
           placeholder="Phone Number"
-          className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+          className="w-full rounded-xl border border-orange-200 bg-orange-50/40 px-4 py-2.5 text-sm text-slate-900 outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-200"
         />
 
-        {/* Address */}
         <input
           name="address"
           value={formData.address}
           onChange={handleChange}
           placeholder="Address"
-          className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+          className="w-full rounded-xl border border-orange-200 bg-orange-50/40 px-4 py-2.5 text-sm text-slate-900 outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-200"
         />
 
-        {/* Image Upload */}
-        <input
-          type="file"
-          onChange={(e) => setFile(e.target.files[0])}
-          className="w-full border p-2 rounded-lg"
-        />
+        <div className="sm:col-span-2">
+          <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-slate-500">
+            Profile Image
+          </label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => setFile(e.target.files[0])}
+            className="w-full rounded-xl border border-orange-200 bg-orange-50/40 p-2.5 text-sm text-slate-700 file:mr-3 file:rounded-lg file:border-0 file:bg-orange-100 file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-orange-700 hover:file:bg-orange-200"
+          />
+        </div>
 
-        {/* Buttons */}
-        <div className="flex gap-3 pt-4">
+        <div className="flex gap-3 pt-2 sm:col-span-2">
           <button
             type="submit"
             disabled={isUpdatingProfile}
-            className="flex-1 bg-green-500 text-white py-2 rounded-lg hover:bg-green-600 transition disabled:opacity-50"
+            className="flex-1 rounded-xl bg-linear-to-r from-orange-500 to-red-500 py-2.5 text-sm font-semibold text-white shadow-md transition hover:from-orange-600 hover:to-red-600 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {isUpdatingProfile ? "Saving..." : "Save Changes"}
           </button>
@@ -98,7 +101,7 @@ export default function EditProfile({ setEditMode }) {
           <button
             type="button"
             onClick={() => setEditMode(false)}
-            className="flex-1 bg-gray-400 text-white py-2 rounded-lg hover:bg-gray-500 transition"
+            className="flex-1 rounded-xl border border-orange-200 bg-white py-2.5 text-sm font-semibold text-orange-700 transition hover:bg-orange-50"
           >
             Cancel
           </button>

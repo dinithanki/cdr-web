@@ -1,15 +1,16 @@
-import React from "react";
 import Navbar from "../components/Navbar";
-import { Home } from "lucide-react";
-import HomePage from "../pages/public/HomePage";
 import { Outlet } from "react-router-dom";
 
 function UserLayout() {
   return (
-    <>
+    <div className="min-h-screen">
       <Navbar />
-      <Outlet />
-    </>
+
+      {/* IMPORTANT: matches h-16 navbar */}
+      <main className="pt-16">
+        <Outlet />
+      </main>
+    </div>
   );
 }
 

@@ -33,10 +33,11 @@ export default function AdminUsers() {
   const filteredUsers = users.filter((user) => {
     const fullName =
       `${user.firstName || ""} ${user.lastName || ""}`.toLowerCase();
+    const email = (user.email || "").toLowerCase();
+    const normalizedSearch = searchTerm.toLowerCase();
 
     const matchesSearch =
-      fullName.includes(searchTerm.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchTerm.toLowerCase());
+      fullName.includes(normalizedSearch) || email.includes(normalizedSearch);
 
     const matchesRole = roleFilter === "all" || user.role === roleFilter;
 
@@ -84,6 +85,17 @@ export default function AdminUsers() {
     setIsSaving(false);
 
     if (updatedUser) closeEditModal();
+  };
+
+  const handleDelete = async (user) => {
+    if (!user?._id) return;
+
+    const shouldDelete = window.confirm(
+      `Delete ${getFullName(user)}? This action cannot be undone.`,
+    );
+
+    if (!shouldDelete) return;
+    await deleteUser(user._id);
   };
 
   const getFullName = (user) =>
@@ -194,7 +206,7 @@ export default function AdminUsers() {
                       </button>
 
                       <button
-                        onClick={() => deleteUser(user._id)}
+                        onClick={() => handleDelete(user)}
                         className="rounded-lg bg-red-500 px-3 py-2 text-white"
                       >
                         Delete
@@ -208,7 +220,163 @@ export default function AdminUsers() {
         </div>
       )}
 
-      {/* (MODALS UNCHANGED — KEEP YOUR EXISTING ONES) */}
+      {/* VIEW MODAL */}
+      {viewUser && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+          <div className="w-full max-w-lg rounded-xl bg-white p-6 shadow-xl">
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-xl font-semibold text-gray-800">
+                User Details
+              </h2>
+              <button
+                onClick={closeViewModal}
+                className="rounded-md px-2 py-1 text-sm text-gray-500 hover:bg-gray-100"
+              >
+                Close
+              </button>
+            </div>
+
+            <div className="space-y-3 text-sm text-gray-700">
+              <p>
+                <span className="font-medium text-gray-900">Name:</span>{" "}
+                {getFullName(viewUser)}
+              </p>
+              <p>
+                <span className="font-medium text-gray-900">Email:</span>{" "}
+                {viewUser.email || "Not available"}
+              </p>
+              <p>
+                <span className="font-medium text-gray-900">Phone:</span>{" "}
+                {viewUser.phoneNumber || "Not available"}
+              </p>
+              <p>
+                <span className="font-medium text-gray-900">Address:</span>{" "}
+                {viewUser.address || "Not available"}
+              </p>
+              <p>
+                <span className="font-medium text-gray-900">Role:</span>{" "}
+                <span className="capitalize">{viewUser.role || "user"}</span>
+              </p>
+              <p>
+                <span className="font-medium text-gray-900">Status:</span>{" "}
+                {viewUser.isBlocked ? "Blocked" : "Active"}
+              </p>
+              <p>
+                <span className="font-medium text-gray-900">Joined:</span>{" "}
+                {formatDate(viewUser.createdAt)}
+              </p>
+            </div>
+
+            <div className="mt-6 flex justify-end">
+              <button
+                onClick={closeViewModal}
+                className="rounded-lg bg-slate-700 px-4 py-2 text-sm text-white"
+              >
+                Done
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* EDIT MODAL */}
+      {selectedUser && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+          <div className="w-full max-w-2xl rounded-xl bg-white p-6 shadow-xl">
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-xl font-semibold text-gray-800">Edit User</h2>
+              <button
+                onClick={closeEditModal}
+                className="rounded-md px-2 py-1 text-sm text-gray-500 hover:bg-gray-100"
+              >
+                Close
+              </button>
+            </div>
+
+            <form
+              onSubmit={handleSubmit}
+              className="grid grid-cols-1 gap-4 md:grid-cols-2"
+            >
+              <input
+                name="firstName"
+                value={formData.firstName}
+                onChange={handleChange}
+                placeholder="First name"
+                className="rounded-lg border px-3 py-2"
+                required
+              />
+              <input
+                name="lastName"
+                value={formData.lastName}
+                onChange={handleChange}
+                placeholder="Last name"
+                className="rounded-lg border px-3 py-2"
+                required
+              />
+              <input
+                name="email"
+                type="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="Email"
+                className="rounded-lg border px-3 py-2 md:col-span-2"
+                required
+              />
+              <input
+                name="phoneNumber"
+                value={formData.phoneNumber}
+                onChange={handleChange}
+                placeholder="Phone number"
+                className="rounded-lg border px-3 py-2"
+              />
+              <input
+                name="address"
+                value={formData.address}
+                onChange={handleChange}
+                placeholder="Address"
+                className="rounded-lg border px-3 py-2"
+              />
+
+              <select
+                name="role"
+                value={formData.role}
+                onChange={handleChange}
+                className="rounded-lg border px-3 py-2"
+              >
+                <option value="user">User</option>
+                <option value="admin">Admin</option>
+              </select>
+
+              <select
+                name="isBlocked"
+                value={String(formData.isBlocked)}
+                onChange={handleChange}
+                className="rounded-lg border px-3 py-2"
+              >
+                <option value="false">Active</option>
+                <option value="true">Blocked</option>
+              </select>
+
+              <div className="md:col-span-2 mt-2 flex justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={closeEditModal}
+                  className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-700"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSaving}
+                  className="rounded-lg bg-blue-600 px-4 py-2 text-sm text-white disabled:opacity-50"
+                >
+                  {isSaving ? "Saving..." : "Save Changes"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
