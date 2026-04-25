@@ -6,6 +6,9 @@ import cors from "cors";
 import userRoutes from "./routes/userRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import cookieParser from "cookie-parser";
+import orderRoutes from "./routes/orderRoutes.js";
+import couponRoutes from "./routes/couponRoutes.js";
+import settingsRoutes from "./routes/settingsRoutes.js
 
 connectDB();
 
@@ -24,6 +27,9 @@ app.use(cookieParser());
 // Routes
 app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);
+app.use("/api/orders", orderRoutes);
+app.use("/api/coupons", couponRoutes);
+app.use("/api/settings", settingsRoutes);
 // Test route
 app.get("/", (req, res) => {
   res.send("Hello World!");

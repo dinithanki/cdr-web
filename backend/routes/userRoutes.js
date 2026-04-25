@@ -6,6 +6,12 @@ import {
   updateProfile,
   adminUpdateUser,
 } from "../controllers/userController.js";
+import {
+  getCart,
+  updateCart,
+  mergeCart,
+  clearCart,
+} from "../controllers/cartController.js";
 import { upload } from "../middlewares/uploadMiddleware.js";
 import { protect, adminOnly } from "../middlewares/authMiddleware.js";
 import { checkAuth } from "../controllers/userController.js";
@@ -29,6 +35,11 @@ router.post("/logout", logout);
 router.post("/google-login", googleLogin);
 router.post("/forgot-password", forgotPassword);
 router.post("/reset-password", resetPassword);
+
+router.get("/cart", protect, getCart);
+router.put("/cart", protect, updateCart);
+router.post("/cart/merge", protect, mergeCart);
+router.delete("/cart", protect, clearCart);
 
 router.put("/update-profile", protect, upload.single("image"), updateProfile);
 

@@ -1,9 +1,12 @@
 import { useAuthStore } from "../store/authStore.js";
 import { Link } from "react-router-dom";
 import { UtensilsCrossed, User, LogOut, ShoppingBag } from "lucide-react";
+import { useCartStore } from "../store/cartStore.js";
 
 const Navbar = () => {
   const { logout, authUser } = useAuthStore();
+  const { openCartDrawer, getCartCount } = useCartStore();
+  const cartCount = getCartCount();
 
   return (
     <header className="fixed top-0 left-0 z-50 w-full bg-linear-to-r from-orange-600 to-red-600 text-white shadow-lg">
@@ -69,13 +72,19 @@ const Navbar = () => {
             </>
           )}
 
-          <Link
-            to="/cart"
-            className="inline-flex items-center gap-1.5 px-2.5 sm:px-4 py-1.5 text-sm font-medium bg-white/20 rounded-lg hover:bg-white/30 transition"
+          <button
+            type="button"
+            onClick={openCartDrawer}
+            className="relative inline-flex items-center gap-1.5 px-2.5 sm:px-4 py-1.5 text-sm font-medium bg-white/20 rounded-lg hover:bg-white/30 transition"
           >
             <ShoppingBag className="size-4" />
             <span className="hidden sm:inline">Cart</span>
-          </Link>
+            {cartCount > 0 && (
+              <span className="absolute -right-1 -top-1 min-w-5 rounded-full bg-white px-1 text-[10px] font-bold leading-5 text-orange-600 shadow">
+                {cartCount}
+              </span>
+            )}
+          </button>
         </div>
       </div>
     </header>

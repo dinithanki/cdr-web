@@ -8,7 +8,7 @@ import { useEffect } from "react";
 import { Loader } from "lucide-react";
 import SignUpPage from "./pages/auth/SignupPage.jsx";
 import { Navigate } from "react-router-dom";
-import Cart from "./components/cart.jsx";
+import CartPage from "./pages/cart/CartPage.jsx";
 import AdminLayout from "./layouts/AdminLayout.jsx";
 import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
 import AdminUsers from "./pages/admin/AdminUsers.jsx";
@@ -23,11 +23,26 @@ import ResetPasswordPage from "./pages/auth/ResetPasswordPage.jsx";
 import AdminProfile from "./pages/admin/AdminProfile.jsx";
 import AdminProfileEdit from "./pages/admin/AdminProfileEdit.jsx";
 import ProductsPage from "./pages/product/ProductsPage.jsx";
+import { useCartStore } from "./store/cartStore.js";
 const App = () => {
   const { authUser, checkAuth, isCheckingAuth } = useAuthStore();
+  const { hydrateGuestCart, syncAuthenticatedCart } = useCartStore();
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
+
+  useEffect(() => {
+    if (isCheckingAuth) return;
+
+    if (authUser) {
+      syncAuthenticatedCart().catch(() => {
+        hydrateGuestCart();
+      });
+      return;
+    }
+
+    hydrateGuestCart();
+  }, [authUser, hydrateGuestCart, isCheckingAuth, syncAuthenticatedCart]);
 
   console.log({ authUser });
 
@@ -46,7 +61,7 @@ const App = () => {
         {/* USER ROUTES */}
         <Route element={<UserLayout />}>
           <Route path="/" element={<HomePage />} />
-          <Route path="/cart" element={<Cart />} />
+          <Route path="/cart" element={<CartPage />} />
           <Route path="/products" element={<ProductsPage />} />
 
           <Route

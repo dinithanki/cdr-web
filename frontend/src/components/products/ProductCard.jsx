@@ -1,5 +1,7 @@
 import { ShoppingCart, Clock } from "lucide-react";
 import toast from "react-hot-toast";
+import { useCartStore } from "../../store/cartStore.js";
+import { useAuthStore } from "../../store/authStore.js";
 
 const PLACEHOLDER_IMAGE =
   "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=900&q=80";
@@ -13,26 +15,19 @@ const formatLkr = (value) =>
 
 export default function ProductCard({ product }) {
   const imageUrl = product.image?.trim() ? product.image : PLACEHOLDER_IMAGE;
+  const { addItem } = useCartStore();
+  const { authUser } = useAuthStore();
 
-  const handleAddToCart = () => {
-    const cart = JSON.parse(localStorage.getItem("cart") || "[]");
-    const existingIndex = cart.findIndex((item) => item._id === product._id);
-
-    if (existingIndex >= 0) {
-      cart[existingIndex].qty += 1;
-      toast.success(`${product.name} quantity increased`);
-    } else {
-      cart.push({
-        _id: product._id,
-        name: product.name,
-        price: product.price,
+  const handleAddToCart = async () => {
+    await addItem(
+      {
+        ...product,
         image: imageUrl,
-        qty: 1,
-      });
-      toast.success(`${product.name} added to cart`);
-    }
+      },
+      { persistToServer: Boolean(authUser) },
+    );
 
-    localStorage.setItem("cart", JSON.stringify(cart));
+    toast.success(`${product.name} added to cart`);
   };
 
   return (

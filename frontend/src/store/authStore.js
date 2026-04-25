@@ -6,6 +6,7 @@ import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { signOut } from "firebase/auth";
 const provider = new GoogleAuthProvider();
 import { sendPasswordResetEmail } from "firebase/auth";
+import { useCartStore } from "./cartStore.js";
 
 export const useAuthStore = create((set) => ({
   authUser: null,
@@ -64,6 +65,7 @@ export const useAuthStore = create((set) => ({
       await signOut(auth).catch(() => {});
       // Clear local auth state
       set({ authUser: null });
+      useCartStore.getState().resetCart();
 
       toast.success("Logged out successfully!");
     } catch (error) {
