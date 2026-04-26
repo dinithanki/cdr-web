@@ -5,12 +5,46 @@ import { axiosInstance } from "../../api/axios.js";
 import { useCartStore } from "../../store/cartStore.js";
 import { useAuthStore } from "../../store/authStore.js";
 
+const PAYHERE_SCRIPT_SRC = "https://www.payhere.lk/lib/payhere.js";
+let payHereScriptPromise = null;
+
 const formatLkr = (value) =>
   new Intl.NumberFormat("en-LK", {
     style: "currency",
     currency: "LKR",
     maximumFractionDigits: 0,
   }).format(Number(value) || 0);
+
+const loadPayHereScript = () => {
+  if (typeof window !== "undefined" && window.payhere) {
+    return Promise.resolve(window.payhere);
+  }
+
+  if (payHereScriptPromise) {
+    return payHereScriptPromise;
+  }
+
+  payHereScriptPromise = new Promise((resolve, reject) => {
+    const existingScript = document.querySelector(
+      `script[src="${PAYHERE_SCRIPT_SRC}"]`,
+    );
+
+    if (existingScript) {
+      existingScript.addEventListener("load", () => resolve(window.payhere));
+      existingScript.addEventListener("error", reject);
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.src = PAYHERE_SCRIPT_SRC;
+    script.async = true;
+    script.onload = () => resolve(window.payhere);
+    script.onerror = reject;
+    document.body.appendChild(script);
+  });
+
+  return payHereScriptPromise;
+};
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
@@ -173,17 +207,59 @@ const CheckoutPage = () => {
         paymentMethod: formData.paymentMethod,
       };
 
+      if (formData.paymentMethod === "CARD") {
+        const res = await axiosInstance.post(
+          "/orders/payment/payhere",
+          payload,
+        );
+        const payHerePayment = res.data?.payment;
+
+        if (!payHerePayment) {
+          throw new Error("Unable to start PayHere payment");
+        }
+
+        await loadPayHereScript();
+
+        if (!window.payhere) {
+          throw new Error("PayHere checkout script failed to load");
+        }
+
+        window.payhere.onCompleted = async () => {
+          await clearCart({ persistToServer: true });
+          toast.success("Payment completed successfully");
+          navigate("/orders", {
+            replace: true,
+            state: { orderId: res.data?.order?._id || "" },
+          });
+        };
+
+        window.payhere.onDismissed = () => {
+          toast.error("Payment was dismissed");
+        };
+
+        window.payhere.onError = () => {
+          toast.error("Payment gateway error");
+        };
+
+        window.payhere.startPayment(payHerePayment);
+        return;
+      }
+
       const res = await axiosInstance.post("/orders", payload);
 
       await clearCart({ persistToServer: true });
 
       toast.success("Order placed successfully");
-      navigate("/cart", {
+      navigate("/orders", {
         replace: true,
         state: { orderId: res.data?._id || "" },
       });
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to place order");
+      toast.error(
+        error.response?.data?.message ||
+          error.message ||
+          "Failed to place order",
+      );
     } finally {
       setIsPlacingOrder(false);
     }
@@ -321,7 +397,7 @@ const CheckoutPage = () => {
                       Card Payment
                     </p>
                     <p className="text-xs text-slate-500">
-                      Credit/Debit card payment
+                      Secure checkout via PayHere
                     </p>
                   </div>
                 </label>

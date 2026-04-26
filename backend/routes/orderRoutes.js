@@ -3,6 +3,7 @@ import { protect, adminOnly } from "../middlewares/authMiddleware.js";
 
 import {
   createOrder,
+  createPayHerePayment,
   getUserOrders,
   getAllOrders,
   updateOrderStatus,
@@ -14,6 +15,9 @@ const router = express.Router();
 // 🟢 Create order (USER must be logged in)
 router.post("/", protect, createOrder);
 
+// 💳 Create PayHere payment session for card checkout
+router.post("/payment/payhere", protect, createPayHerePayment);
+
 // 🟡 Get all orders (ADMIN only)
 router.get("/admin/all", protect, adminOnly, getAllOrders);
 
@@ -24,6 +28,7 @@ router.get("/", protect, getUserOrders);
 router.put("/:id/status", protect, adminOnly, updateOrderStatus);
 
 // 💳 Payment callback (NO protect - PayHere calls it)
+router.post("/payment/notify", markAsPaid);
 router.post("/payment/success", markAsPaid);
 
 export default router;

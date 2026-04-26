@@ -22,6 +22,7 @@ app.use(
 
 // Middlewares FIRST
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // Routes
