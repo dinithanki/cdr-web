@@ -8,7 +8,7 @@ import productRoutes from "./routes/productRoutes.js";
 import cookieParser from "cookie-parser";
 import orderRoutes from "./routes/orderRoutes.js";
 import couponRoutes from "./routes/couponRoutes.js";
-import settingsRoutes from "./routes/settingsRoutes.js
+import settingsRoutes from "./routes/settingsRoutes.js";
 
 connectDB();
 

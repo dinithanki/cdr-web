@@ -1,6 +1,12 @@
 import { useAuthStore } from "../store/authStore.js";
 import { Link } from "react-router-dom";
-import { UtensilsCrossed, User, LogOut, ShoppingBag } from "lucide-react";
+import {
+  UtensilsCrossed,
+  User,
+  LogOut,
+  ShoppingBag,
+  ClipboardList,
+} from "lucide-react";
 import { useCartStore } from "../store/cartStore.js";
 
 const Navbar = () => {
@@ -43,7 +49,6 @@ const Navbar = () => {
               </Link>
             </>
           )}
-
           <Link
             to="/products"
             className="inline-flex items-center gap-1.5 px-2.5 sm:px-4 py-1.5 text-sm font-medium rounded-lg hover:bg-white/20 transition"
@@ -54,6 +59,14 @@ const Navbar = () => {
 
           {authUser && (
             <>
+              <Link
+                to="/orders"
+                className="hidden sm:inline-flex items-center gap-1.5 px-2.5 sm:px-4 py-1.5 text-sm font-medium rounded-lg hover:bg-white/20 transition"
+              >
+                <ClipboardList className="size-4" />
+                <span className="hidden sm:inline">Orders</span>
+              </Link>
+
               <Link
                 to="/profile"
                 className="hidden sm:inline-flex items-center gap-1.5 px-2.5 sm:px-4 py-1.5 text-sm font-medium rounded-lg hover:bg-white/20 transition"

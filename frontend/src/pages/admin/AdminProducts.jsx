@@ -1,6 +1,13 @@
 import { useEffect, useState } from "react";
 import { useProductStore } from "../../store/useProductStore.js";
 
+const formatCurrency = (value) =>
+  new Intl.NumberFormat("en-LK", {
+    style: "currency",
+    currency: "LKR",
+    maximumFractionDigits: 0,
+  }).format(Number(value) || 0);
+
 export default function AdminProducts() {
   const {
     products,

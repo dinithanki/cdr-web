@@ -6,6 +6,7 @@ import {
   Settings,
   LogOut,
   Utensils,
+  TicketPercent,
 } from "lucide-react";
 
 import { useAuthStore } from "../store/authStore.js";
@@ -58,6 +59,13 @@ const AdminSidebar = () => {
         >
           <ShoppingBag size={18} />
           Orders
+        </Link>
+        <Link
+          to="/admin/coupons"
+          className={`flex items-center gap-2 p-2 rounded hover:bg-base-300 ${isActive("/admin/coupons") ? "bg-base-300 font-semibold" : ""}`}
+        >
+          <TicketPercent size={18} />
+          Coupons
         </Link>
         <Link
           to="/admin/settings"

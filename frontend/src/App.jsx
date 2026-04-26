@@ -9,15 +9,18 @@ import { Loader } from "lucide-react";
 import SignUpPage from "./pages/auth/SignupPage.jsx";
 import { Navigate } from "react-router-dom";
 import CartPage from "./pages/cart/CartPage.jsx";
+import CheckoutPage from "./pages/cart/CheckoutPage.jsx";
 import AdminLayout from "./layouts/AdminLayout.jsx";
 import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
 import AdminUsers from "./pages/admin/AdminUsers.jsx";
 import UserLayout from "./layouts/UserLayout.jsx";
 import ProfilePage from "./pages/user/ProfilePage.jsx";
+import Orders from "./pages/user/Orders.jsx";
 import AuthLayout from "./layouts/AuthLayout.jsx";
 import AdminProducts from "./pages/admin/AdminProducts.jsx";
 import AdminOrders from "./pages/admin/AdminOrders.jsx";
 import AdminSettings from "./pages/admin/AdminSettings.jsx";
+import CouponsPage from "./pages/admin/coupons/CouponsPage.jsx";
 import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage.jsx";
 import ResetPasswordPage from "./pages/auth/ResetPasswordPage.jsx";
 import AdminProfile from "./pages/admin/AdminProfile.jsx";
@@ -62,11 +65,16 @@ const App = () => {
         <Route element={<UserLayout />}>
           <Route path="/" element={<HomePage />} />
           <Route path="/cart" element={<CartPage />} />
+          <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/products" element={<ProductsPage />} />
 
           <Route
             path="/profile"
             element={authUser ? <ProfilePage /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/orders"
+            element={authUser ? <Orders /> : <Navigate to="/login" />}
           />
         </Route>
 
@@ -92,6 +100,7 @@ const App = () => {
           <Route path="users" element={<AdminUsers />} />
           <Route path="products" element={<AdminProducts />} />
           <Route path="orders" element={<AdminOrders />} />
+          <Route path="coupons" element={<CouponsPage />} />
           <Route path="settings" element={<AdminSettings />} />
           <Route path="profile" element={<AdminProfile />} />
           <Route path="profile/edit" element={<AdminProfileEdit />} />

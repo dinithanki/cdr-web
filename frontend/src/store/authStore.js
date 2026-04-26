@@ -131,4 +131,14 @@ export const useAuthStore = create((set) => ({
       set({ isUpdatingProfile: false });
     }
   },
+
+  getUserOrders: async () => {
+    try {
+      const res = await axiosInstance.get("/orders");
+      return res.data || [];
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to fetch orders");
+      return [];
+    }
+  },
 }));

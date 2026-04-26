@@ -1,4 +1,4 @@
-import Coupon from "../models/Coupon.js";
+import Coupon from "../models/coupon.js";
 
 // 🟢 CREATE coupon (admin)
 export const createCoupon = async (req, res) => {

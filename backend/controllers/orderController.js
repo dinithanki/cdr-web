@@ -1,5 +1,5 @@
-import Order from "../models/Order.js";
-import Settings from "../models/Settings.js";
+import Order from "../models/order.js";
+import Settings from "../models/settings.js";
 
 // 🟢 CREATE ORDER (COD + CARD)
 export const createOrder = async (req, res) => {
@@ -42,7 +42,8 @@ export const createOrder = async (req, res) => {
 
     res.json(order);
   } catch (error) {
-    res.status(500).json({ message: "Error creating order" });
+    console.error("Order creation error:", error);
+    res.status(500).json({ message: error.message || "Error creating order" });
   }
 };
 
@@ -50,6 +51,16 @@ export const createOrder = async (req, res) => {
 export const getUserOrders = async (req, res) => {
   const orders = await Order.find({ userId: req.user._id });
   res.json(orders);
+};
+
+// 🟡 GET ALL ORDERS (ADMIN ONLY)
+export const getAllOrders = async (req, res) => {
+  try {
+    const orders = await Order.find().sort({ createdAt: -1 });
+    res.json(orders);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching orders" });
+  }
 };
 
 // 🟡 UPDATE ORDER STATUS (ADMIN)

@@ -1,4 +1,4 @@
-import Settings from "../models/Settings.js";
+import Settings from "../models/settings.js";
 
 // 🟢 GET settings (used in checkout page)
 export const getSettings = async (req, res) => {
