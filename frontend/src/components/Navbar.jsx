@@ -33,6 +33,13 @@ const Navbar = () => {
 
         {/* RIGHT - Actions */}
         <div className="flex items-center gap-2 sm:gap-4">
+          <Link
+            to="/products"
+            className="inline-flex items-center gap-1.5 px-2.5 sm:px-4 py-1.5 text-sm font-medium rounded-lg hover:bg-white/20 transition"
+          >
+            <UtensilsCrossed className="size-4" />
+            <span className="hidden sm:inline">Menu</span>
+          </Link>
           {!authUser && (
             <>
               <Link
@@ -49,13 +56,6 @@ const Navbar = () => {
               </Link>
             </>
           )}
-          <Link
-            to="/products"
-            className="inline-flex items-center gap-1.5 px-2.5 sm:px-4 py-1.5 text-sm font-medium rounded-lg hover:bg-white/20 transition"
-          >
-            <UtensilsCrossed className="size-4" />
-            <span className="hidden sm:inline">Menu</span>
-          </Link>
 
           {authUser && (
             <>
