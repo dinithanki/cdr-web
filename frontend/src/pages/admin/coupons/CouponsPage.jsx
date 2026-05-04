@@ -33,6 +33,7 @@ export default function CouponsPage() {
     discountType: "PERCENT",
     discountValue: "",
     minOrderAmount: "0",
+    usageLimit: "",
     expiryDate: "",
     isActive: true,
   });
@@ -42,6 +43,7 @@ export default function CouponsPage() {
     discountType: "PERCENT",
     discountValue: "",
     minOrderAmount: "0",
+    usageLimit: "",
     expiryDate: "",
     isActive: true,
   });
@@ -91,6 +93,7 @@ export default function CouponsPage() {
       discountType: createForm.discountType,
       discountValue: Number(createForm.discountValue || 0),
       minOrderAmount: Number(createForm.minOrderAmount || 0),
+      usageLimit: createForm.usageLimit ? Number(createForm.usageLimit) : null,
       expiryDate: createForm.expiryDate || null,
       isActive: Boolean(createForm.isActive),
     };
@@ -105,6 +108,7 @@ export default function CouponsPage() {
       discountType: "PERCENT",
       discountValue: "",
       minOrderAmount: "0",
+      usageLimit: "",
       expiryDate: "",
       isActive: true,
     });
@@ -117,6 +121,7 @@ export default function CouponsPage() {
       discountType: coupon.discountType || "PERCENT",
       discountValue: String(coupon.discountValue ?? ""),
       minOrderAmount: String(coupon.minOrderAmount ?? 0),
+      usageLimit: coupon.usageLimit ? String(coupon.usageLimit) : "",
       expiryDate: coupon.expiryDate
         ? new Date(coupon.expiryDate).toISOString().slice(0, 10)
         : "",
@@ -137,6 +142,7 @@ export default function CouponsPage() {
       discountType: editForm.discountType,
       discountValue: Number(editForm.discountValue || 0),
       minOrderAmount: Number(editForm.minOrderAmount || 0),
+      usageLimit: editForm.usageLimit ? Number(editForm.usageLimit) : null,
       expiryDate: editForm.expiryDate || null,
       isActive: Boolean(editForm.isActive),
     };
@@ -211,6 +217,16 @@ export default function CouponsPage() {
           />
 
           <input
+            name="usageLimit"
+            type="number"
+            min="0"
+            value={createForm.usageLimit}
+            onChange={handleCreateChange}
+            placeholder="Usage limit (leave empty for unlimited)"
+            className="rounded-lg border px-3 py-2"
+          />
+
+          <input
             name="expiryDate"
             type="date"
             value={createForm.expiryDate}
@@ -276,6 +292,7 @@ export default function CouponsPage() {
                 <th className="px-4 py-3">Code</th>
                 <th className="px-4 py-3">Rule</th>
                 <th className="px-4 py-3">Min Order</th>
+                <th className="px-4 py-3">Usage</th>
                 <th className="px-4 py-3">Expiry</th>
                 <th className="px-4 py-3">Status</th>
                 <th className="px-4 py-3">Actions</th>
@@ -285,62 +302,79 @@ export default function CouponsPage() {
             <tbody>
               {filteredCoupons.length === 0 ? (
                 <tr>
-                  <td colSpan="6" className="py-6 text-center text-gray-500">
+                  <td colSpan="7" className="py-6 text-center text-gray-500">
                     No coupons match your filters.
                   </td>
                 </tr>
               ) : (
-                filteredCoupons.map((coupon) => (
-                  <tr
-                    key={coupon._id}
-                    className="border-t text-sm text-gray-700"
-                  >
-                    <td className="px-4 py-3 font-semibold text-gray-900">
-                      {coupon.code}
-                    </td>
-                    <td className="px-4 py-3">
-                      {coupon.discountType === "PERCENT"
-                        ? `${coupon.discountValue}% off`
-                        : `$${coupon.discountValue} off`}
-                    </td>
-                    <td className="px-4 py-3">${coupon.minOrderAmount || 0}</td>
-                    <td className="px-4 py-3">
-                      {formatDate(coupon.expiryDate)}
-                    </td>
-                    <td className="px-4 py-3">
-                      <span
-                        className={`rounded-full px-3 py-1 text-xs font-medium ${
-                          coupon.isActive
-                            ? "bg-green-100 text-green-700"
-                            : "bg-red-100 text-red-700"
+                filteredCoupons.map((coupon) => {
+                  const isLimitReached =
+                    coupon.usageLimit && coupon.usageCount >= coupon.usageLimit;
+                  return (
+                    <tr
+                      key={coupon._id}
+                      className={`border-t text-sm ${
+                        isLimitReached
+                          ? "bg-yellow-50 text-gray-500"
+                          : "text-gray-700"
+                      }`}
+                    >
+                      <td className="px-4 py-3 font-semibold text-gray-900">
+                        {coupon.code}
+                      </td>
+                      <td className="px-4 py-3">
+                        {coupon.discountType === "PERCENT"
+                          ? `${coupon.discountValue}% off`
+                          : `${formatCurrency(coupon.discountValue)} off`}
+                      </td>
+                      <td className="px-4 py-3">
+                        {formatCurrency(coupon.minOrderAmount || 0)}
+                      </td>
+                      <td
+                        className={`px-4 py-3 font-semibold ${
+                          isLimitReached ? "text-yellow-700" : ""
                         }`}
                       >
-                        {coupon.isActive ? "Active" : "Inactive"}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <button
-                          onClick={() => openEditModal(coupon)}
-                          className="rounded-lg bg-blue-500 px-3 py-2 text-white"
-                        >
-                          Edit
-                        </button>
-
-                        <button
-                          onClick={() =>
-                            toggleCouponStatus(coupon._id, !coupon.isActive)
-                          }
-                          className={`rounded-lg px-3 py-2 text-white ${
-                            coupon.isActive ? "bg-red-500" : "bg-green-600"
+                        {coupon.usageCount || 0}/{coupon.usageLimit || "∞"}
+                      </td>
+                      <td className="px-4 py-3">
+                        {formatDate(coupon.expiryDate)}
+                      </td>
+                      <td className="px-4 py-3">
+                        <span
+                          className={`rounded-full px-3 py-1 text-xs font-medium ${
+                            coupon.isActive
+                              ? "bg-green-100 text-green-700"
+                              : "bg-red-100 text-red-700"
                           }`}
                         >
-                          {coupon.isActive ? "Deactivate" : "Activate"}
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
+                          {coupon.isActive ? "Active" : "Inactive"}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <button
+                            onClick={() => openEditModal(coupon)}
+                            className="rounded-lg bg-blue-500 px-3 py-2 text-white"
+                          >
+                            Edit
+                          </button>
+
+                          <button
+                            onClick={() =>
+                              toggleCouponStatus(coupon._id, !coupon.isActive)
+                            }
+                            className={`rounded-lg px-3 py-2 text-white ${
+                              coupon.isActive ? "bg-red-500" : "bg-green-600"
+                            }`}
+                          >
+                            {coupon.isActive ? "Deactivate" : "Activate"}
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })
               )}
             </tbody>
           </table>
@@ -410,12 +444,29 @@ export default function CouponsPage() {
               />
 
               <input
+                name="usageLimit"
+                type="number"
+                min="0"
+                value={editForm.usageLimit}
+                onChange={handleEditChange}
+                placeholder="Usage limit (leave empty for unlimited)"
+                className="rounded-lg border px-3 py-2"
+              />
+
+              <input
                 name="expiryDate"
                 type="date"
                 value={editForm.expiryDate}
                 onChange={handleEditChange}
                 className="rounded-lg border px-3 py-2"
               />
+
+              <div className="rounded-lg border border-gray-300 bg-gray-50 px-3 py-2">
+                <p className="text-sm text-gray-600">
+                  Usage: {selectedCoupon?.usageCount || 0}/
+                  {selectedCoupon?.usageLimit || "∞"}
+                </p>
+              </div>
 
               <select
                 name="isActive"
