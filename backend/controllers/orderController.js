@@ -96,6 +96,12 @@ const createOrderRecord = async ({ req, body, paymentStatus = "PENDING" }) => {
 // 🟢 CREATE ORDER (COD)
 export const createOrder = async (req, res) => {
   try {
+    // Prevent blocked users from creating orders
+    if (req.user && req.user.isBlocked) {
+      return res
+        .status(403)
+        .json({ message: "Your account is blocked and cannot place orders" });
+    }
     const { paymentMethod } = req.body;
 
     if (!paymentMethod) {
@@ -114,6 +120,12 @@ export const createOrder = async (req, res) => {
 // 💳 CREATE PAYHERE PAYMENT SESSION (CARD)
 export const createPayHerePayment = async (req, res) => {
   try {
+    // Prevent blocked users from creating orders/payments
+    if (req.user && req.user.isBlocked) {
+      return res
+        .status(403)
+        .json({ message: "Your account is blocked and cannot place orders" });
+    }
     const merchantId = String(process.env.PAYHERE_MERCHANT_ID || "").trim();
     const merchantSecret = String(
       process.env.PAYHERE_MERCHANT_SECRET || "",
