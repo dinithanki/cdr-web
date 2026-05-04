@@ -20,7 +20,6 @@ import Promotions from "./pages/user/Promotions.jsx";
 import About from "./pages/more/About.jsx";
 import Contact from "./pages/more/Contact.jsx";
 import Catering from "./pages/more/Catering.jsx";
-import Reviews from "./pages/more/Reviews.jsx";
 import AuthLayout from "./layouts/AuthLayout.jsx";
 import AdminProducts from "./pages/admin/AdminProducts.jsx";
 import AdminOrders from "./pages/admin/AdminOrders.jsx";
@@ -83,7 +82,6 @@ const App = () => {
             element={authUser ? <Orders /> : <Navigate to="/login" />}
           />
           <Route path="/promotions" element={<Promotions />} />
-          <Route path="/reviews" element={<Reviews />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/catering" element={<Catering />} />

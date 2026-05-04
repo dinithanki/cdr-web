@@ -77,13 +77,6 @@ const Navbar = () => {
             {moreOpen && (
               <div className="absolute right-0 mt-2 w-44 rounded bg-white text-slate-800 shadow-lg z-50">
                 <Link
-                  to="/reviews"
-                  onClick={() => setMoreOpen(false)}
-                  className="block px-4 py-2 hover:bg-slate-100"
-                >
-                  Reviews
-                </Link>
-                <Link
                   to="/catering"
                   onClick={() => setMoreOpen(false)}
                   className="block px-4 py-2 hover:bg-slate-100"
