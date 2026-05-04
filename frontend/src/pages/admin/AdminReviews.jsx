@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Star, Check, X, Trash2 } from "lucide-react";
+import { Star, Check, X, ChevronDown } from "lucide-react";
 import { useReviewStore } from "../../store/reviewStore.js";
 
 const formatDate = (date) => {
@@ -28,11 +28,11 @@ export default function AdminReviews() {
     getAllReviews,
     approveReview,
     rejectReview,
-    deleteReviewAdmin,
   } = useReviewStore();
   const [error, setError] = useState("");
   const [filter, setFilter] = useState("all");
   const [actingReviewId, setActingReviewId] = useState(null);
+  const [openDropdown, setOpenDropdown] = useState(null);
 
   useEffect(() => {
     const fetchReviews = async () => {
@@ -65,19 +65,6 @@ export default function AdminReviews() {
       setError(err.message || "Failed to reject review");
     } finally {
       setActingReviewId(null);
-    }
-  };
-
-  const handleDelete = async (reviewId) => {
-    if (window.confirm("Are you sure you want to delete this review?")) {
-      setActingReviewId(reviewId);
-      try {
-        await deleteReviewAdmin(reviewId);
-      } catch (err) {
-        setError(err.message || "Failed to delete review");
-      } finally {
-        setActingReviewId(null);
-      }
     }
   };
 
@@ -234,34 +221,46 @@ export default function AdminReviews() {
 
                 {/* Actions */}
                 <div className="flex gap-2 pt-4 border-t">
-                  {review.status === "pending" && (
-                    <>
-                      <button
-                        onClick={() => handleApprove(review._id)}
-                        disabled={actingReviewId === review._id || submitting}
-                        className="flex items-center gap-2 px-4 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 disabled:bg-gray-300 disabled:text-gray-600 transition font-medium"
-                      >
-                        <Check className="w-4 h-4" />
-                        Approve
-                      </button>
-                      <button
-                        onClick={() => handleReject(review._id)}
-                        disabled={actingReviewId === review._id || submitting}
-                        className="flex items-center gap-2 px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 disabled:bg-gray-300 disabled:text-gray-600 transition font-medium"
-                      >
-                        <X className="w-4 h-4" />
-                        Reject
-                      </button>
-                    </>
-                  )}
-                  <button
-                    onClick={() => handleDelete(review._id)}
-                    disabled={actingReviewId === review._id || submitting}
-                    className="ml-auto flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 disabled:bg-gray-300 disabled:text-gray-600 transition font-medium"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                    Delete
-                  </button>
+                  <div className="relative">
+                    <button
+                      onClick={() =>
+                        setOpenDropdown(
+                          openDropdown === review._id ? null : review._id,
+                        )
+                      }
+                      disabled={actingReviewId === review._id || submitting}
+                      className="flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 disabled:bg-gray-300 disabled:text-gray-600 transition font-medium"
+                    >
+                      Change Status
+                      <ChevronDown className="w-4 h-4" />
+                    </button>
+                    {openDropdown === review._id && (
+                      <div className="absolute top-full mt-2 left-0 bg-white border border-gray-200 rounded-lg shadow-lg z-10 w-40">
+                        <button
+                          onClick={() => {
+                            handleApprove(review._id);
+                            setOpenDropdown(null);
+                          }}
+                          disabled={actingReviewId === review._id || submitting}
+                          className="w-full text-left px-4 py-2 hover:bg-green-50 text-green-700 font-medium transition flex items-center gap-2 border-b"
+                        >
+                          <Check className="w-4 h-4" />
+                          Approve
+                        </button>
+                        <button
+                          onClick={() => {
+                            handleReject(review._id);
+                            setOpenDropdown(null);
+                          }}
+                          disabled={actingReviewId === review._id || submitting}
+                          className="w-full text-left px-4 py-2 hover:bg-red-50 text-red-700 font-medium transition flex items-center gap-2"
+                        >
+                          <X className="w-4 h-4" />
+                          Reject
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             ))}
