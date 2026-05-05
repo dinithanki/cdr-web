@@ -34,7 +34,7 @@ function Footer() {
               </a>
             </li>
             <li>
-              <a href="/menu" className="hover:text-white">
+              <a href="/products" className="hover:text-white">
                 Menu
               </a>
             </li>
