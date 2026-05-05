@@ -211,16 +211,6 @@ const Navbar = () => {
             {moreOpen && (
               <div className="ml-4 mt-2 space-y-2">
                 <Link
-                  to="/reviews"
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    setMoreOpen(false);
-                  }}
-                  className="block px-3 py-2 rounded-lg hover:bg-white/20 transition"
-                >
-                  Reviews
-                </Link>
-                <Link
                   to="/catering"
                   onClick={() => {
                     setMobileMenuOpen(false);
