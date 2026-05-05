@@ -1,7 +1,7 @@
-import React from "react";
+import SettingsPage from "./settings/SettingsPage.jsx";
 
 const AdminSettings = () => {
-  return <div>AdminSettings</div>;
+  return <SettingsPage />;
 };
 
 export default AdminSettings;

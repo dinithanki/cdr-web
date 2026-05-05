@@ -4,6 +4,20 @@ import bcrypt from "bcryptjs";
 import { generateToken } from "../utils/generateToken.js";
 import crypto from "crypto";
 import { sendEmail } from "../services/emailService.js";
+
+const serializeUser = (user) => ({
+  _id: user._id,
+  firstName: user.firstName,
+  lastName: user.lastName,
+  email: user.email,
+  profilePic: user.profilePic,
+  phoneNumber: user.phoneNumber,
+  address: user.address,
+  role: user.role,
+  isBlocked: user.isBlocked,
+  createdAt: user.createdAt,
+});
+
 export const signup = async (req, res) => {
   try {
     const { firstName, lastName, email, password } = req.body;
@@ -48,14 +62,7 @@ export const signup = async (req, res) => {
       res,
     );
 
-    return res.status(201).json({
-      _id: newUser._id,
-      firstName: newUser.firstName,
-      lastName: newUser.lastName,
-      email: newUser.email,
-      profilePic: newUser.profilePic,
-      role: newUser.role,
-    });
+    return res.status(201).json(serializeUser(newUser));
   } catch (error) {
     console.error("Error in signup controller:", error);
     res.status(500).json({ message: "Error in signup controller" });
@@ -93,44 +100,13 @@ export const login = async (req, res) => {
     );
     console.log("User logged in:", user.email);
 
-    return res.status(200).json({
-      _id: user._id,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-      profilePic: user.profilePic,
-      role: user.role,
-    });
+    return res.status(200).json(serializeUser(user));
   } catch (error) {
     console.error("Error in login controller:", error);
     res.status(500).json({ message: "Error in login controller" });
   }
 };
-export const uploadProfilePic = async (req, res) => {
-  try {
-    const file = req.file;
 
-    if (!req.user || !req.user.id) {
-      return res.status(401).json({ message: "Unauthorized" });
-    }
-
-    if (!file) {
-      return res.status(400).json({ message: "No file uploaded" });
-    }
-
-    const imageUrl = await uploadProfileImage(file);
-
-    const user = await User.findByIdAndUpdate(
-      req.user.id,
-      { profilePic: imageUrl },
-      { new: true },
-    );
-
-    res.json(user);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
 export const logout = (req, res) => {
   try {
     res.clearCookie("jwt", {
@@ -188,7 +164,7 @@ export const makeAdmin = async (req, res) => {
 };
 export const checkAuth = async (req, res) => {
   try {
-    res.status(200).json(req.user);
+    res.status(200).json(serializeUser(req.user));
   } catch (error) {
     console.error("Error in checkAuth controller:", error);
     res.status(500).json({ message: "Error in checkAuth controller" });
@@ -219,14 +195,7 @@ export const googleLogin = async (req, res) => {
         res,
       );
 
-      return res.status(200).json({
-        _id: user._id,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        profilePic: user.profilePic,
-        role: user.role,
-      });
+      return res.status(200).json(serializeUser(user));
     }
 
     //New user → create account
@@ -247,13 +216,7 @@ export const googleLogin = async (req, res) => {
       res,
     );
 
-    return res.status(201).json({
-      _id: user._id,
-      firstName: user.firstName,
-      email: user.email,
-      profilePic: user.profilePic,
-      role: user.role,
-    });
+    return res.status(201).json(serializeUser(user));
   } catch (error) {
     console.error("Error in googleLogin:", error);
     res.status(500).json({ message: "Google login failed" });
@@ -314,5 +277,100 @@ export const resetPassword = async (req, res) => {
     res.json({ message: "Password updated successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+
+export const updateProfile = async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    const { firstName, lastName, phoneNumber, address } = req.body;
+
+    let imageUrl;
+
+    // 🟢 1. Upload image if exists
+    if (req.file) {
+      imageUrl = await uploadProfileImage(req.file);
+    }
+
+    // 🟢 2. Build update object
+    // 🟢 2. Build update object (SAFE VERSION)
+    const updateData = {};
+
+    if (firstName) updateData.firstName = firstName;
+    if (lastName) updateData.lastName = lastName;
+    if (phoneNumber) updateData.phoneNumber = phoneNumber;
+    if (address) updateData.address = address;
+
+    if (imageUrl) {
+      updateData.profilePic = imageUrl;
+    }
+
+    if (imageUrl) {
+      updateData.profilePic = imageUrl;
+    }
+
+    // 🟢 3. Update DB
+    const updatedUser = await User.findByIdAndUpdate(userId, updateData, {
+      new: true,
+    }).select("-password");
+
+    // 🟢 4. Return updated user
+    res.json(serializeUser(updatedUser));
+  } catch (error) {
+    res.status(500).json({
+      message: error.message || "Profile update failed",
+    });
+  }
+};
+export const adminUpdateUser = async (req, res) => {
+  try {
+    const userId = req.params.id;
+
+    const {
+      firstName,
+      lastName,
+      email,
+      phoneNumber,
+      address,
+      role,
+      isBlocked,
+      status,
+    } = req.body;
+
+    let imageUrl;
+
+    if (req.file) {
+      imageUrl = await uploadProfileImage(req.file);
+    }
+
+    const updateData = {};
+
+    if (firstName) updateData.firstName = firstName;
+    if (lastName) updateData.lastName = lastName;
+    if (email) updateData.email = email;
+    if (phoneNumber) updateData.phoneNumber = phoneNumber;
+    if (address) updateData.address = address;
+
+    if (role) updateData.role = role;
+
+    if (typeof isBlocked === "boolean") updateData.isBlocked = isBlocked;
+    if (typeof status === "string") {
+      updateData.isBlocked = status.toLowerCase() === "blocked";
+    }
+
+    if (imageUrl) {
+      updateData.profilePic = imageUrl;
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(userId, updateData, {
+      new: true,
+    }).select("-password");
+
+    res.json(serializeUser(updatedUser));
+  } catch (error) {
+    res.status(500).json({
+      message: error.message || "Admin update failed",
+    });
   }
 };

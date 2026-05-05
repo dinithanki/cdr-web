@@ -1,7 +1,18 @@
 import express from "express";
-import { signup, login, logout } from "../controllers/userController.js";
+import {
+  signup,
+  login,
+  logout,
+  updateProfile,
+  adminUpdateUser,
+} from "../controllers/userController.js";
+import {
+  getCart,
+  updateCart,
+  mergeCart,
+  clearCart,
+} from "../controllers/cartController.js";
 import { upload } from "../middlewares/uploadMiddleware.js";
-import { uploadProfilePic } from "../controllers/userController.js";
 import { protect, adminOnly } from "../middlewares/authMiddleware.js";
 import { checkAuth } from "../controllers/userController.js";
 import { googleLogin } from "../controllers/userController.js";
@@ -16,18 +27,26 @@ import {
 
 const router = express.Router();
 
+router.get("/check", protect, checkAuth);
+
 router.post("/signup", signup);
 router.post("/login", login);
-router.post("/upload-profile-pic", upload.single("image"), uploadProfilePic);
 router.post("/logout", logout);
 router.post("/google-login", googleLogin);
 router.post("/forgot-password", forgotPassword);
 router.post("/reset-password", resetPassword);
 
+router.get("/cart", protect, getCart);
+router.put("/cart", protect, updateCart);
+router.post("/cart/merge", protect, mergeCart);
+router.delete("/cart", protect, clearCart);
+
+router.put("/update-profile", protect, upload.single("image"), updateProfile);
+
 router.get("/", protect, adminOnly, getAllUsers);
 router.delete("/:id", protect, adminOnly, deleteUser);
 router.put("/:id", protect, adminOnly, updateUser);
 router.patch("/make-admin/:id", protect, adminOnly, makeAdmin);
-router.get("/check", protect, checkAuth);
+router.put("/admin-update/:id", protect, adminOnly, adminUpdateUser);
 
 export default router;

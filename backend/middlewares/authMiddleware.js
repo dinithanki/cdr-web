@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
+import User from "../models/user.js";
 
-export const protect = (req, res, next) => {
+export const protect = async (req, res, next) => {
   try {
     const token = req.cookies.jwt;
 
@@ -9,18 +10,20 @@ export const protect = (req, res, next) => {
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = {
-      id: decoded.id,
-      role: decoded.role,
-    };
-    console.log("TOKEN:", token);
-    console.log("DECODED:", decoded);
+    const userId = decoded?.id || decoded?.userId;
+
+    const user = await User.findById(userId).select("-password");
+
+    if (!user) {
+      return res.status(401).json({ message: "User not found" });
+    }
+
+    req.user = user;
 
     next();
   } catch (error) {
     return res.status(401).json({ message: "Invalid token" });
   }
-    
 };
 export const adminOnly = (req, res, next) => {
   if (!req.user || req.user.role !== "admin") {

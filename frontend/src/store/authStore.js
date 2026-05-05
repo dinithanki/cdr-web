@@ -6,6 +6,7 @@ import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { signOut } from "firebase/auth";
 const provider = new GoogleAuthProvider();
 import { sendPasswordResetEmail } from "firebase/auth";
+import { useCartStore } from "./cartStore.js";
 
 export const useAuthStore = create((set) => ({
   authUser: null,
@@ -54,6 +55,9 @@ export const useAuthStore = create((set) => ({
   },
 
   logout: async () => {
+    const confirmLogout = window.confirm("Are you sure you want to logout?");
+
+    if (!confirmLogout) return; // stop if user clicks Cancel
     try {
       // 🔥 Backend logout
       await axiosInstance.post("/users/logout");
@@ -61,6 +65,7 @@ export const useAuthStore = create((set) => ({
       await signOut(auth).catch(() => {});
       // Clear local auth state
       set({ authUser: null });
+      useCartStore.getState().resetCart();
 
       toast.success("Logged out successfully!");
     } catch (error) {
@@ -68,18 +73,6 @@ export const useAuthStore = create((set) => ({
     }
   },
 
-  updateProfile: async (data) => {
-    set({ isUpdatingProfile: true });
-    try {
-      const res = await axiosInstance.put("/users/update-profile", data);
-      set({ authUser: res.data });
-      toast.success("Profile updated!");
-    } catch (error) {
-      toast.error(error.response?.data?.message || "Update failed");
-    } finally {
-      set({ isUpdatingProfile: false });
-    }
-  },
   googleLogin: async () => {
     try {
       set({ loading: true });
@@ -121,6 +114,31 @@ export const useAuthStore = create((set) => ({
       return false;
     } finally {
       set({ loading: false });
+    }
+  },
+  updateProfile: async (data) => {
+    set({ isUpdatingProfile: true });
+
+    try {
+      const res = await axiosInstance.put("/users/update-profile", data);
+
+      set({ authUser: res.data }); // update UI globally
+
+      toast.success("Profile updated!");
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Update failed");
+    } finally {
+      set({ isUpdatingProfile: false });
+    }
+  },
+
+  getUserOrders: async () => {
+    try {
+      const res = await axiosInstance.get("/orders");
+      return res.data || [];
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to fetch orders");
+      return [];
     }
   },
 }));

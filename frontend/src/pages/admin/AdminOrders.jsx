@@ -1,7 +1,7 @@
-import React from "react";
+import OrdersPage from "./orders/OrdersPage.jsx";
 
 const AdminOrders = () => {
-  return <div>AdminOrders</div>;
+  return <OrdersPage />;
 };
 
 export default AdminOrders;
