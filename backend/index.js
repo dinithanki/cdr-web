@@ -10,6 +10,7 @@ import orderRoutes from "./routes/orderRoutes.js";
 import couponRoutes from "./routes/couponRoutes.js";
 import settingsRoutes from "./routes/settingsRoutes.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
+import contactRoutes from "./routes/contactRoutes.js";
 
 connectDB();
 
@@ -33,6 +34,7 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/coupons", couponRoutes);
 app.use("/api/settings", settingsRoutes);
 app.use("/api/reviews", reviewRoutes);
+app.use("/api/contacts", contactRoutes);
 // Test route
 app.get("/", (req, res) => {
   res.send("Hello World!");

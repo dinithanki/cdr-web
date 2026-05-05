@@ -3,7 +3,7 @@ import { useContactStore } from "../../store/contactStore";
 import { useAuthStore } from "../../store/authStore";
 import { Link } from "react-router-dom";
 
-export default function Contact() {
+export default function ContactPage() {
   const [formData, setFormData] = useState({
     subject: "",
     message: "",

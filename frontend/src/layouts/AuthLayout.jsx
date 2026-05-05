@@ -1,7 +1,17 @@
-import { Outlet, Link } from "react-router-dom";
+import { Outlet, Link, Navigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import { useAuthStore } from "../store/authStore";
 
 const AuthLayout = () => {
+  const { authUser } = useAuthStore();
+
+  if (authUser) {
+    if (authUser.role === "admin") {
+      return <Navigate to="/admin/dashboard" replace />;
+    }
+    return <Navigate to="/" replace />;
+  }
+
   return (
     <>
       <Navbar />

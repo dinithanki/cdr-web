@@ -1,9 +1,16 @@
 import Navbar from "../components/Navbar";
-import { Outlet } from "react-router-dom";
+import { Outlet, Navigate } from "react-router-dom";
 import CartDrawer from "../components/CartDrawer.jsx";
 import Footer from "../components/products/Footer.jsx";
+import { useAuthStore } from "../store/authStore.js";
 
 function UserLayout() {
+  const { authUser } = useAuthStore();
+
+  if (authUser?.role === "admin") {
+    return <Navigate to="/admin/dashboard" replace />;
+  }
+
   return (
     <div className="min-h-screen">
       <Navbar />

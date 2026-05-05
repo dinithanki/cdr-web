@@ -30,6 +30,7 @@ import ResetPasswordPage from "./pages/auth/ResetPasswordPage.jsx";
 import AdminProfile from "./pages/admin/AdminProfile.jsx";
 import AdminProfileEdit from "./pages/admin/AdminProfileEdit.jsx";
 import AdminReviews from "./pages/admin/AdminReviews.jsx";
+import AdminMessages from "./pages/admin/AdminMessages.jsx";
 import ProductsPage from "./pages/product/ProductsPage.jsx";
 import { useCartStore } from "./store/cartStore.js";
 const App = () => {
@@ -111,6 +112,7 @@ const App = () => {
           <Route path="orders" element={<AdminOrders />} />
           <Route path="reviews" element={<AdminReviews />} />
           <Route path="coupons" element={<CouponsPage />} />
+          <Route path="messages" element={<AdminMessages />} />
           <Route path="settings" element={<AdminSettings />} />
           <Route path="profile" element={<AdminProfile />} />
           <Route path="profile/edit" element={<AdminProfileEdit />} />

@@ -8,6 +8,7 @@ import {
   Utensils,
   TicketPercent,
   Star,
+  MessageSquare,
 } from "lucide-react";
 
 import { useAuthStore } from "../store/authStore.js";
@@ -74,6 +75,13 @@ const AdminSidebar = () => {
         >
           <TicketPercent size={18} />
           Coupons
+        </Link>
+        <Link
+          to="/admin/messages"
+          className={`flex items-center gap-2 p-2 rounded hover:bg-base-300 ${isActive("/admin/messages") ? "bg-base-300 font-semibold" : ""}`}
+        >
+          <MessageSquare size={18} />
+          Messages
         </Link>
         <Link
           to="/admin/settings"

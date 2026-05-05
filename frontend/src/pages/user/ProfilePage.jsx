@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuthStore } from "../../store/authStore.js";
+import { useContactStore } from "../../store/contactStore.js";
 import EditProfile from "./EditProfile";
 import {
   Mail,
@@ -10,6 +11,7 @@ import {
   LogOut,
   Clock,
   Star,
+  MessageSquare
 } from "lucide-react";
 
 const DEFAULT_PROFILE_IMAGE =
@@ -17,7 +19,14 @@ const DEFAULT_PROFILE_IMAGE =
 
 export default function ProfilePage() {
   const { authUser, logout } = useAuthStore();
+  const { myContacts, fetchMyContacts } = useContactStore();
   const [editMode, setEditMode] = useState(false);
+
+  useEffect(() => {
+    if (authUser && !editMode) {
+      fetchMyContacts();
+    }
+  }, [authUser, editMode, fetchMyContacts]);
 
   if (!authUser) {
     return (
@@ -190,7 +199,7 @@ export default function ProfilePage() {
             <h2 className="mb-4 text-2xl font-bold text-slate-900">
               Account Statistics
             </h2>
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid gap-4 sm:grid-cols-3">
               <div className="rounded-xl bg-white p-6 shadow-md text-center transition hover:shadow-lg">
                 <div className="inline-flex rounded-lg bg-orange-100 p-3">
                   <Clock size={24} className="text-orange-600" />
@@ -204,6 +213,20 @@ export default function ProfilePage() {
                 </div>
                 <p className="mt-4 text-3xl font-bold text-slate-900">0</p>
                 <p className="text-sm text-slate-600">Total Orders</p>
+              </div>
+              <div className="rounded-xl bg-white p-6 shadow-md text-center transition hover:shadow-lg">
+                <div className="inline-flex rounded-lg bg-blue-100 p-3">
+                  <MessageSquare size={24} className="text-blue-600" />
+                </div>
+                <p className="mt-4 flex justify-center gap-4 text-xl font-bold text-slate-900">
+                  <span className="text-yellow-600" title="Pending Messages">
+                    {myContacts.filter(c => c.status === "Pending").length} <span className="text-xs text-slate-500 font-normal">Pending</span>
+                  </span>
+                  <span className="text-green-600" title="Replied Messages">
+                    {myContacts.filter(c => c.status === "Replied").length} <span className="text-xs text-slate-500 font-normal">Replied</span>
+                  </span>
+                </p>
+                <p className="text-sm text-slate-600 mt-2">Support Messages</p>
               </div>
             </div>
           </div>
