@@ -5,11 +5,15 @@ function ScrollToTop() {
   const { pathname } = useLocation();
 
   useEffect(() => {
-    window.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: "smooth", // change to "auto" if you want instant
-    });
+    // A small timeout ensures the page has rendered before attempting to scroll.
+    // 'auto' or 'instant' behavior works better than 'smooth' for route transitions.
+    setTimeout(() => {
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: "auto",
+      });
+    }, 0);
   }, [pathname]);
 
   return null;
