@@ -11,7 +11,7 @@ import {
   LogOut,
   Clock,
   Star,
-  MessageSquare
+  MessageSquare,
 } from "lucide-react";
 
 const DEFAULT_PROFILE_IMAGE =
@@ -218,12 +218,33 @@ export default function ProfilePage() {
                 <div className="inline-flex rounded-lg bg-blue-100 p-3">
                   <MessageSquare size={24} className="text-blue-600" />
                 </div>
-                <p className="mt-4 flex justify-center gap-4 text-xl font-bold text-slate-900">
+                <p className="mt-4 flex flex-wrap justify-center gap-x-4 gap-y-2 text-lg font-bold text-slate-900">
                   <span className="text-yellow-600" title="Pending Messages">
-                    {myContacts.filter(c => c.status === "Pending").length} <span className="text-xs text-slate-500 font-normal">Pending</span>
+                    {myContacts.filter((c) => c.status === "Pending").length}{" "}
+                    <span className="text-xs text-slate-500 font-normal">
+                      Pending
+                    </span>
+                  </span>
+                  <span className="text-blue-500" title="Under Review Messages">
+                    {
+                      myContacts.filter((c) => c.status === "Under Review")
+                        .length
+                    }{" "}
+                    <span className="text-xs text-slate-500 font-normal">
+                      Under Review
+                    </span>
                   </span>
                   <span className="text-green-600" title="Replied Messages">
-                    {myContacts.filter(c => c.status === "Replied").length} <span className="text-xs text-slate-500 font-normal">Replied</span>
+                    {myContacts.filter((c) => c.status === "Replied").length}{" "}
+                    <span className="text-xs text-slate-500 font-normal">
+                      Replied
+                    </span>
+                  </span>
+                  <span className="text-slate-600" title="Closed Messages">
+                    {myContacts.filter((c) => c.status === "Closed").length}{" "}
+                    <span className="text-xs text-slate-500 font-normal">
+                      Closed
+                    </span>
                   </span>
                 </p>
                 <p className="text-sm text-slate-600 mt-2">Support Messages</p>
