@@ -26,7 +26,9 @@ export default function About() {
         <Star
           key={star}
           className={`w-4 h-4 ${
-            star <= rating ? "fill-amber-400 text-amber-400" : "text-slate-300"
+            star <= rating
+              ? "fill-orange-500 text-orange-500"
+              : "text-slate-300"
           }`}
         />
       ))}
@@ -34,11 +36,11 @@ export default function About() {
   );
 
   return (
-    <div className="bg-linear-to-b from-amber-50 via-white to-slate-50">
+    <div className="bg-linear-to-b from-orange-50 via-white to-slate-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20">
         <section className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] items-center">
           <div>
-            <p className="inline-flex items-center rounded-full bg-amber-100 px-4 py-1 text-sm font-medium text-amber-900 mb-5">
+            <p className="inline-flex items-center rounded-full bg-orange-100 px-4 py-1 text-sm font-medium text-orange-900 mb-5">
               About Us
             </p>
             <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-slate-900">
@@ -51,17 +53,17 @@ export default function About() {
             </p>
 
             <div className="mt-8 grid gap-4 sm:grid-cols-3">
-              <div className="rounded-2xl border border-amber-100 bg-white/80 p-4 shadow-sm">
+              <div className="rounded-2xl border border-orange-100 bg-white/80 p-4 shadow-sm">
                 <p className="text-3xl font-bold text-slate-900">Fresh</p>
                 <p className="mt-1 text-sm text-slate-600">Ingredients daily</p>
               </div>
-              <div className="rounded-2xl border border-amber-100 bg-white/80 p-4 shadow-sm">
+              <div className="rounded-2xl border border-orange-100 bg-white/80 p-4 shadow-sm">
                 <p className="text-3xl font-bold text-slate-900">Trusted</p>
                 <p className="mt-1 text-sm text-slate-600">
                   Real customer feedback
                 </p>
               </div>
-              <div className="rounded-2xl border border-amber-100 bg-white/80 p-4 shadow-sm">
+              <div className="rounded-2xl border border-orange-100 bg-white/80 p-4 shadow-sm">
                 <p className="text-3xl font-bold text-slate-900">Made</p>
                 <p className="mt-1 text-sm text-slate-600">For everyday joy</p>
               </div>
@@ -69,9 +71,9 @@ export default function About() {
           </div>
 
           <div className="relative">
-            <div className="absolute -inset-4 rounded-4xl bg-amber-200/40 blur-2xl" />
-            <div className="relative overflow-hidden rounded-4xl bg-slate-900 p-8 text-white shadow-2xl">
-              <p className="text-sm uppercase tracking-[0.3em] text-amber-200">
+            <div className="absolute -inset-4 rounded-4xl bg-orange-200/40 blur-2xl" />
+            <div className="relative overflow-hidden rounded-4xl bg-linear-to-r from-orange-700 via-orange-600 to-red-600 p-8 text-white shadow-2xl">
+              <p className="text-sm uppercase tracking-[0.3em] text-orange-200">
                 Customer love
               </p>
               <h2 className="mt-4 text-3xl font-bold">
@@ -135,10 +137,10 @@ export default function About() {
                       <img
                         src={review.userId.profilePic}
                         alt={review.userId?.firstName || "Customer"}
-                        className="h-11 w-11 rounded-full object-cover ring-2 ring-amber-100"
+                        className="h-11 w-11 rounded-full object-cover ring-2 ring-orange-100"
                       />
                     ) : (
-                      <div className="flex h-11 w-11 items-center justify-center rounded-full bg-amber-100 text-sm font-semibold text-amber-900">
+                      <div className="flex h-11 w-11 items-center justify-center rounded-full bg-orange-100 text-sm font-semibold text-orange-900">
                         {(review.userId?.firstName?.[0] || "C") +
                           (review.userId?.lastName?.[0] || "")}
                       </div>

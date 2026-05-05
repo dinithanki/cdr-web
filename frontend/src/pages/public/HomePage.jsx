@@ -1,12 +1,16 @@
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 import {
   ArrowRight,
   Bike,
   Clock3,
   ShieldCheck,
   Sparkles,
+  Heart,
   Star,
 } from "lucide-react";
+import { useProductStore } from "../../store/useProductStore";
+import { useReviewStore } from "../../store/reviewStore";
 
 const highlights = [
   {
@@ -38,7 +42,45 @@ const categories = [
 const heroCookingVideoUrl =
   "https://videos.pexels.com/video-files/2620043/2620043-hd_1920_1080_25fps.mp4";
 
+const shuffleProducts = (items) => {
+  const shuffled = [...items];
+
+  for (let index = shuffled.length - 1; index > 0; index -= 1) {
+    const randomIndex = Math.floor(Math.random() * (index + 1));
+    [shuffled[index], shuffled[randomIndex]] = [
+      shuffled[randomIndex],
+      shuffled[index],
+    ];
+  }
+
+  return shuffled;
+};
+
 function HomePage() {
+  const { products, getProducts } = useProductStore();
+  const {
+    approvedReviews,
+    loading: reviewsLoading,
+    getApprovedReviews,
+  } = useReviewStore();
+  const [showcaseProducts, setShowcaseProducts] = useState([]);
+
+  useEffect(() => {
+    getProducts();
+    getApprovedReviews();
+  }, [getProducts, getApprovedReviews]);
+
+  useEffect(() => {
+    if (products && products.length > 0) {
+      const randomProducts = shuffleProducts(products).slice(
+        0,
+        Math.min(8, products.length),
+      );
+
+      setShowcaseProducts(randomProducts);
+    }
+  }, [products]);
+
   return (
     <div className="min-h-screen bg-linear-to-b from-orange-50 via-amber-50 to-white text-slate-900">
       <section className="relative isolate overflow-hidden px-4 pb-14 pt-10 sm:px-6 lg:px-8">
@@ -67,14 +109,14 @@ function HomePage() {
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <Link
                 to="/products"
-                className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-slate-800"
+                className="inline-flex items-center gap-2 rounded-xl bg-linear-to-r from-orange-700 via-orange-600 to-red-600 px-5 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:shadow-lg"
               >
                 Order Now
                 <ArrowRight className="size-4" />
               </Link>
               <Link
                 to="/catering"
-                className="rounded-xl border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-slate-800 transition hover:-translate-y-0.5 hover:border-slate-400"
+                className="rounded-xl border border-orange-300 bg-white px-5 py-3 text-sm font-semibold text-orange-700 transition hover:-translate-y-0.5 hover:border-orange-400"
               >
                 Catering Services
               </Link>
@@ -207,6 +249,147 @@ function HomePage() {
             ))}
           </div>
         </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-4 pb-14 sm:px-6 lg:px-8">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-orange-700">
+            Featured Items
+          </p>
+          <h2 className="mt-2 text-2xl font-black text-slate-900 sm:text-3xl">
+            Our Signature Creations
+          </h2>
+          <p className="mt-2 text-slate-600">
+            Get our signature dishes here, handpicked from our live menu.
+          </p>
+        </div>
+
+        {showcaseProducts.length > 0 ? (
+          <div className="mt-8 overflow-hidden rounded-3xl border border-orange-100 bg-white p-4 shadow-sm">
+            <div
+              className="marquee-track flex w-max gap-4 animate-marquee-left hover:[animation-play-state:paused]"
+              style={{
+                animationDuration: `${Math.max(60, showcaseProducts.length * 10)}s`,
+              }}
+            >
+              {[...showcaseProducts, ...showcaseProducts].map(
+                (product, index) => (
+                  <Link
+                    key={`${product._id}-${index}`}
+                    to="/products"
+                    className="group flex w-64 shrink-0 flex-col overflow-hidden rounded-2xl border border-orange-100 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-orange-300"
+                  >
+                    <div className="relative h-44 overflow-hidden bg-slate-100">
+                      <img
+                        src={product.image}
+                        alt={product.name}
+                        className="h-full w-full object-cover transition duration-300 group-hover:scale-110"
+                      />
+                      <div className="absolute left-3 top-3 rounded-full bg-black/45 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-white backdrop-blur">
+                        Chef-Curated Selection
+                      </div>
+                    </div>
+
+                    <div className="flex-1 p-4">
+                      <h3 className="text-lg font-bold text-slate-900 group-hover:text-orange-700">
+                        {product.name}
+                      </h3>
+                      <p className="mt-2 text-sm text-slate-600">
+                        Freshly prepared and ready to enjoy.
+                      </p>
+                      <div className="mt-4 flex items-center justify-between">
+                        <p className="text-lg font-black text-orange-700">
+                          LKR {product.price}
+                        </p>
+                      </div>
+                    </div>
+                  </Link>
+                ),
+              )}
+            </div>
+          </div>
+        ) : (
+          <div className="mt-8 rounded-2xl border border-slate-200 bg-slate-50 p-8 text-center">
+            <p className="text-slate-600">Loading signature dishes...</p>
+          </div>
+        )}
+      </section>
+
+      <section className="mx-auto max-w-7xl px-4 pb-14 sm:px-6 lg:px-8">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-orange-700">
+            Testimonials
+          </p>
+          <h2 className="mt-2 text-2xl font-black text-slate-900 sm:text-3xl">
+            What Our Customers Say
+          </h2>
+          <p className="mt-2 text-slate-600">
+            Join thousands of satisfied customers enjoying Dragon Dine's
+            signature dishes.
+          </p>
+        </div>
+
+        {reviewsLoading ? (
+          <div className="mt-8 rounded-2xl border border-orange-100 bg-orange-50 p-8 text-center">
+            <p className="text-slate-600">Loading customer reviews...</p>
+          </div>
+        ) : approvedReviews && approvedReviews.length > 0 ? (
+          <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            {approvedReviews.slice(0, 4).map((review) => (
+              <div
+                key={review._id}
+                className="rounded-2xl border border-orange-100 bg-linear-to-br from-orange-50 to-red-50 p-6 shadow-sm"
+              >
+                <div className="flex items-center gap-1">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <Star
+                      key={star}
+                      className={`size-4 ${
+                        star <= review.rating
+                          ? "fill-orange-500 text-orange-500"
+                          : "text-slate-300"
+                      }`}
+                    />
+                  ))}
+                </div>
+
+                <p className="mt-4 text-slate-700">
+                  {review.comment
+                    ? review.comment.substring(0, 100) +
+                      (review.comment.length > 100 ? "..." : "")
+                    : "Great experience!"}
+                </p>
+
+                <div className="mt-4 flex items-center gap-3">
+                  {review.userId?.profilePic ? (
+                    <img
+                      src={review.userId.profilePic}
+                      alt={review.userId?.firstName || "Customer"}
+                      className="size-10 rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="flex size-10 items-center justify-center rounded-full bg-orange-200 text-xs font-bold text-orange-700">
+                      {(review.userId?.firstName?.[0] || "C") +
+                        (review.userId?.lastName?.[0] || "")}
+                    </div>
+                  )}
+                  <div>
+                    <p className="font-bold text-slate-900">
+                      {review.userId?.firstName} {review.userId?.lastName}
+                    </p>
+                    <p className="text-xs text-orange-700">Verified Customer</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="mt-8 rounded-2xl border border-orange-100 bg-orange-50 p-8 text-center">
+            <p className="text-slate-600">
+              No customer reviews yet. Be the first!
+            </p>
+          </div>
+        )}
       </section>
     </div>
   );

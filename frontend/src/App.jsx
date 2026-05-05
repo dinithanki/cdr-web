@@ -33,6 +33,7 @@ import AdminReviews from "./pages/admin/AdminReviews.jsx";
 import AdminMessages from "./pages/admin/AdminMessages.jsx";
 import ProductsPage from "./pages/product/ProductsPage.jsx";
 import { useCartStore } from "./store/cartStore.js";
+import ScrollToTop from "./components/ScrollToTop";
 const App = () => {
   const { authUser, checkAuth, isCheckingAuth } = useAuthStore();
   const { hydrateGuestCart, syncAuthenticatedCart } = useCartStore();
@@ -65,6 +66,7 @@ const App = () => {
   return (
     <div>
       <Toaster position="top-right" />
+      <ScrollToTop />
 
       <Routes>
         {/* USER ROUTES */}
