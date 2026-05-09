@@ -68,40 +68,50 @@ export default function ProfilePage() {
       {!editMode ? (
         <div className="mx-auto w-full max-w-7xl">
           <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-            <div className="h-16 bg-linear-to-r from-orange-700 via-orange-600 to-red-600" />
-            <div className="-mt-9 flex flex-col gap-4 px-5 pb-5 sm:flex-row sm:items-end sm:px-6">
-              <img
-                src={profileImage}
-                alt={fullName || "Profile"}
-                className="h-20 w-20 rounded-2xl border-4 border-white object-cover shadow-lg"
-              />
+            <div className="h-16 bg-white" />
+            <div className="-mt-12 flex flex-col gap-5 px-5 pb-5 sm:flex-row sm:items-end sm:px-8">
+              <div className="relative shrink-0 h-24 w-24 sm:h-28 sm:w-28">
+                <div className="flex h-full w-full items-center justify-center rounded-full border-4 border-white bg-slate-100 shadow-lg">
+                  <span className="text-3xl font-black text-slate-300">
+                    {fullName ? fullName.charAt(0).toUpperCase() : "U"}
+                  </span>
+                </div>
+                <img
+                  src={profileImage}
+                  alt="Profile"
+                  className="absolute inset-0 h-full w-full rounded-full border-4 border-white object-cover shadow-lg"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                  }}
+                />
+              </div>
 
-              <div className="flex-1">
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+              <div className="flex-1 pb-1">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                   <div>
-                    <div className="flex flex-wrap items-center gap-2">
-                      <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">
-                        Signed in as
-                      </p>
+                    <div className="flex flex-wrap items-center gap-3">
+                      <h2 className="text-3xl font-black tracking-tight text-slate-900 sm:text-4xl">
+                        {fullName || "Guest User"}
+                      </h2>
                       {authUser?.isBlocked ? (
-                        <span className="rounded-full bg-red-50 px-2.5 py-1 text-[11px] font-black uppercase tracking-wide text-red-700 ring-1 ring-red-100">
+                        <span className="rounded-full bg-red-50 px-2.5 py-1 text-[11px] font-black uppercase tracking-wide text-red-700 ring-1 ring-red-500/20">
                           Blocked
                         </span>
                       ) : (
-                        <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-black uppercase tracking-wide text-emerald-700 ring-1 ring-emerald-100">
+                        <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-black uppercase tracking-wide text-emerald-700 ring-1 ring-emerald-500/20">
                           Active
                         </span>
                       )}
                     </div>
-                    <h2 className="mt-1 text-2xl font-black text-slate-950 sm:text-3xl">
-                      {fullName || "Guest User"}
-                    </h2>
-                    <div className="mt-2 flex flex-wrap items-center gap-2 text-sm font-semibold text-slate-500">
-                      <span className="capitalize text-orange-700">
-                        {authUser.role || "customer"} account
+                    <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm font-medium text-slate-500">
+                      <span className="inline-flex items-center gap-1.5 capitalize text-slate-700">
+                        <span className="h-2 w-2 rounded-full bg-orange-500"></span>
+                        {authUser.role || "customer"}
                       </span>
-                      <span className="h-1 w-1 rounded-full bg-slate-300" />
-                      <span>Member since {memberSince}</span>
+                      <span className="hidden h-1 w-1 rounded-full bg-slate-300 sm:block" />
+                      <span>{authUser.email}</span>
+                      <span className="hidden h-1 w-1 rounded-full bg-slate-300 sm:block" />
+                      <span>Joined {memberSince}</span>
                     </div>
                   </div>
 
