@@ -15,12 +15,13 @@ const router = express.Router();
 
 // Public routes
 router.get("/", getAllProducts);
-router.get("/:id", getProductById);
 
 // Admin only routes
 router.get("/admin/all", protect, adminOnly, getAllProductsAdmin);
 router.post("/", protect, adminOnly, upload.single("image"), createProduct);
 router.put("/:id", protect, adminOnly, upload.single("image"), updateProduct);
 router.delete("/:id", protect, adminOnly, deleteProduct);
+
+router.get("/:id", getProductById);
 
 export default router;
