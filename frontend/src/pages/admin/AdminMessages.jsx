@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { MessageSquare, Trash2 } from "lucide-react";
 import { useContactStore } from "../../store/contactStore";
+import { confirmAction } from "../../utils/confirmAction.js";
 
 const formatDate = (date) => {
   if (!date) return "N/A";
@@ -28,10 +29,16 @@ export default function AdminMessages() {
     fetchAllContacts();
   }, [fetchAllContacts]);
 
-  const handleDelete = (id) => {
-    if (window.confirm("Are you sure you want to delete this message?")) {
-      deleteContact(id);
-    }
+  const handleDelete = async (id) => {
+    const shouldDelete = await confirmAction({
+      title: "Delete message?",
+      message: "Are you sure you want to delete this message?",
+      confirmText: "Delete",
+      cancelText: "Keep message",
+      variant: "danger",
+    });
+
+    if (shouldDelete) deleteContact(id);
   };
 
   const handleStatusChange = (id, newStatus) => {
