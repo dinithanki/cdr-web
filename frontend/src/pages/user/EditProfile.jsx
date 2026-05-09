@@ -38,62 +38,92 @@ export default function EditProfile({ setEditMode }) {
   };
 
   return (
-    <div className="mx-auto w-full max-w-3xl rounded-3xl border border-orange-100 bg-white/95 p-6 shadow-xl backdrop-blur-sm sm:p-8">
-      <h2 className="mb-2 text-2xl font-bold text-slate-900">Edit Profile</h2>
-      <p className="mb-6 text-sm text-slate-500">
-        Update your details to keep your delivery experience smooth.
-      </p>
+    <div className="mx-auto w-full max-w-4xl">
+      <div className="mb-6">
+        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-orange-600">
+          My Account
+        </p>
+        <h1 className="mt-1 text-3xl font-black text-slate-950">
+          Edit Profile
+        </h1>
+        <p className="mt-2 max-w-2xl text-sm text-slate-500">
+          Update your personal details and delivery information.
+        </p>
+      </div>
 
-      <form onSubmit={handleSubmit} className="grid gap-4 sm:grid-cols-2">
-        <input
-          name="firstName"
-          value={formData.firstName}
-          onChange={handleChange}
-          placeholder="First Name"
-          className="w-full rounded-xl border border-orange-200 bg-orange-50/40 px-4 py-2.5 text-sm text-slate-900 outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-200"
-        />
+      <form
+        onSubmit={handleSubmit}
+        className="grid gap-5 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:grid-cols-2 sm:p-6"
+      >
+        <label className="block">
+          <span className="mb-2 block text-xs font-bold uppercase tracking-wide text-slate-500">
+            First Name
+          </span>
+          <input
+            name="firstName"
+            value={formData.firstName}
+            onChange={handleChange}
+            placeholder="First Name"
+            className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-900 outline-none transition focus:border-orange-400 focus:bg-white focus:ring-2 focus:ring-orange-100"
+          />
+        </label>
 
-        <input
-          name="lastName"
-          value={formData.lastName}
-          onChange={handleChange}
-          placeholder="Last Name"
-          className="w-full rounded-xl border border-orange-200 bg-orange-50/40 px-4 py-2.5 text-sm text-slate-900 outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-200"
-        />
+        <label className="block">
+          <span className="mb-2 block text-xs font-bold uppercase tracking-wide text-slate-500">
+            Last Name
+          </span>
+          <input
+            name="lastName"
+            value={formData.lastName}
+            onChange={handleChange}
+            placeholder="Last Name"
+            className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-900 outline-none transition focus:border-orange-400 focus:bg-white focus:ring-2 focus:ring-orange-100"
+          />
+        </label>
 
-        <input
-          name="phoneNumber"
-          value={formData.phoneNumber}
-          onChange={handleChange}
-          placeholder="Phone Number"
-          className="w-full rounded-xl border border-orange-200 bg-orange-50/40 px-4 py-2.5 text-sm text-slate-900 outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-200"
-        />
+        <label className="block">
+          <span className="mb-2 block text-xs font-bold uppercase tracking-wide text-slate-500">
+            Phone Number
+          </span>
+          <input
+            name="phoneNumber"
+            value={formData.phoneNumber}
+            onChange={handleChange}
+            placeholder="Phone Number"
+            className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-900 outline-none transition focus:border-orange-400 focus:bg-white focus:ring-2 focus:ring-orange-100"
+          />
+        </label>
 
-        <input
-          name="address"
-          value={formData.address}
-          onChange={handleChange}
-          placeholder="Address"
-          className="w-full rounded-xl border border-orange-200 bg-orange-50/40 px-4 py-2.5 text-sm text-slate-900 outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-200"
-        />
+        <label className="block">
+          <span className="mb-2 block text-xs font-bold uppercase tracking-wide text-slate-500">
+            Delivery Address
+          </span>
+          <input
+            name="address"
+            value={formData.address}
+            onChange={handleChange}
+            placeholder="Address"
+            className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-900 outline-none transition focus:border-orange-400 focus:bg-white focus:ring-2 focus:ring-orange-100"
+          />
+        </label>
 
         <div className="sm:col-span-2">
-          <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-slate-500">
+          <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-slate-500">
             Profile Image
           </label>
           <input
             type="file"
             accept="image/*"
             onChange={(e) => setFile(e.target.files[0])}
-            className="w-full rounded-xl border border-orange-200 bg-orange-50/40 p-2.5 text-sm text-slate-700 file:mr-3 file:rounded-lg file:border-0 file:bg-orange-100 file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-orange-700 hover:file:bg-orange-200"
+            className="w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm text-slate-700 file:mr-3 file:rounded-lg file:border-0 file:bg-slate-950 file:px-3 file:py-1.5 file:text-sm file:font-bold file:text-white hover:file:bg-slate-800"
           />
         </div>
 
-        <div className="flex gap-3 pt-2 sm:col-span-2">
+        <div className="flex flex-col gap-3 border-t border-slate-100 pt-5 sm:col-span-2 sm:flex-row">
           <button
             type="submit"
             disabled={isUpdatingProfile}
-            className="flex-1 rounded-xl bg-linear-to-r from-orange-500 to-red-500 py-2.5 text-sm font-semibold text-white shadow-md transition hover:from-orange-600 hover:to-red-600 disabled:cursor-not-allowed disabled:opacity-60"
+            className="flex-1 rounded-xl bg-slate-950 py-3 text-sm font-bold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {isUpdatingProfile ? "Saving..." : "Save Changes"}
           </button>
@@ -101,7 +131,7 @@ export default function EditProfile({ setEditMode }) {
           <button
             type="button"
             onClick={() => setEditMode(false)}
-            className="flex-1 rounded-xl border border-orange-200 bg-white py-2.5 text-sm font-semibold text-orange-700 transition hover:bg-orange-50"
+            className="flex-1 rounded-xl border border-slate-200 bg-white py-3 text-sm font-bold text-slate-700 transition hover:bg-slate-50"
           >
             Cancel
           </button>

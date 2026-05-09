@@ -28,6 +28,14 @@ export default function ProfilePage() {
     }
   }, [authUser, editMode, fetchMyContacts]);
 
+  useEffect(() => {
+    if (!editMode) return;
+
+    requestAnimationFrame(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    });
+  }, [editMode]);
+
   if (!authUser) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-linear-to-b from-orange-50 via-amber-50 to-white px-4 pt-28 text-slate-600">
@@ -56,71 +64,58 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] px-4 pb-14 pt-8 sm:px-6">
+    <div className="min-h-screen bg-[#f8fafc] px-4 pb-10 pt-5 sm:px-6">
       {!editMode ? (
-        <div className="mx-auto w-full max-w-6xl">
-          <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-orange-600">
-                My Account
-              </p>
-              <h1 className="mt-1 text-3xl font-black text-slate-950 sm:text-4xl">
-                Hello, {authUser.firstName || "there"}
-              </h1>
-            </div>
-            <p className="max-w-xl text-sm text-slate-500 sm:text-right">
-              Keep your delivery details and account preferences up to date.
-            </p>
-          </div>
-
+        <div className="mx-auto w-full max-w-7xl">
           <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-            <div className="h-28 bg-linear-to-r from-orange-700 via-orange-600 to-red-600" />
-            <div className="-mt-14 flex flex-col gap-6 px-5 pb-6 sm:flex-row sm:items-end sm:px-8">
+            <div className="h-16 bg-linear-to-r from-orange-700 via-orange-600 to-red-600" />
+            <div className="-mt-9 flex flex-col gap-4 px-5 pb-5 sm:flex-row sm:items-end sm:px-6">
               <img
                 src={profileImage}
                 alt={fullName || "Profile"}
-                className="h-28 w-28 rounded-2xl border-4 border-white object-cover shadow-lg"
+                className="h-20 w-20 rounded-2xl border-4 border-white object-cover shadow-lg"
               />
 
               <div className="flex-1">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                   <div>
-                    <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">
-                      Profile Overview
-                    </p>
-                    <h2 className="mt-1 text-2xl font-black text-slate-950 sm:text-3xl">
-                      {fullName || "Guest User"}
-                    </h2>
-                    <p className="mt-1 text-sm font-medium text-slate-500">
-                      Member since {memberSince}
-                    </p>
-                    <div className="mt-4 flex flex-wrap gap-2">
-                      <span className="rounded-full bg-orange-50 px-3 py-1 text-xs font-bold capitalize text-orange-700 ring-1 ring-orange-100">
-                        {authUser.role || "customer"}
-                      </span>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">
+                        Signed in as
+                      </p>
                       {authUser?.isBlocked ? (
-                        <span className="rounded-full bg-red-50 px-3 py-1 text-xs font-bold text-red-700 ring-1 ring-red-100">
+                        <span className="rounded-full bg-red-50 px-2.5 py-1 text-[11px] font-black uppercase tracking-wide text-red-700 ring-1 ring-red-100">
                           Blocked
                         </span>
                       ) : (
-                        <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700 ring-1 ring-emerald-100">
+                        <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-black uppercase tracking-wide text-emerald-700 ring-1 ring-emerald-100">
                           Active
                         </span>
                       )}
+                    </div>
+                    <h2 className="mt-1 text-2xl font-black text-slate-950 sm:text-3xl">
+                      {fullName || "Guest User"}
+                    </h2>
+                    <div className="mt-2 flex flex-wrap items-center gap-2 text-sm font-semibold text-slate-500">
+                      <span className="capitalize text-orange-700">
+                        {authUser.role || "customer"} account
+                      </span>
+                      <span className="h-1 w-1 rounded-full bg-slate-300" />
+                      <span>Member since {memberSince}</span>
                     </div>
                   </div>
 
                   <div className="flex gap-3">
                     <button
                       onClick={() => setEditMode(true)}
-                      className="inline-flex items-center justify-center gap-2 rounded-lg bg-slate-950 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-slate-800"
+                      className="inline-flex items-center justify-center gap-2 rounded-lg bg-slate-950 px-4 py-2 text-sm font-bold text-white transition hover:bg-slate-800"
                     >
                       <Edit2 size={16} />
                       Edit
                     </button>
                     <button
                       onClick={logout}
-                      className="inline-flex items-center justify-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-2.5 text-sm font-bold text-red-700 transition hover:bg-red-100"
+                      className="inline-flex items-center justify-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-sm font-bold text-red-700 transition hover:bg-red-100"
                     >
                       <LogOut size={16} />
                       Logout
@@ -131,10 +126,10 @@ export default function ProfilePage() {
             </div>
           </section>
 
-          <div className="mt-6 grid gap-6 lg:grid-cols-[1.4fr_0.9fr]">
-            <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-              <div className="mb-5 flex items-center justify-between gap-4">
-                <h2 className="text-xl font-black text-slate-950">
+          <div className="mt-4 grid gap-4 xl:grid-cols-[1.15fr_0.85fr_1fr]">
+            <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+              <div className="mb-3 flex items-center justify-between gap-4">
+                <h2 className="text-lg font-black text-slate-950">
                   Contact Details
                 </h2>
                 <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600">
@@ -142,10 +137,10 @@ export default function ProfilePage() {
                 </span>
               </div>
 
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="rounded-xl border border-slate-100 bg-slate-50 p-4">
-                  <div className="mb-3 inline-flex rounded-lg bg-orange-100 p-3">
-                    <Mail size={20} className="text-orange-600" />
+              <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-1 2xl:grid-cols-2">
+                <div className="rounded-xl border border-slate-100 bg-slate-50 p-3">
+                  <div className="mb-2 inline-flex rounded-lg bg-orange-100 p-2">
+                    <Mail size={18} className="text-orange-600" />
                   </div>
                   <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
                     Email Address
@@ -155,9 +150,9 @@ export default function ProfilePage() {
                   </p>
                 </div>
 
-                <div className="rounded-xl border border-slate-100 bg-slate-50 p-4">
-                  <div className="mb-3 inline-flex rounded-lg bg-sky-100 p-3">
-                    <Phone size={20} className="text-blue-600" />
+                <div className="rounded-xl border border-slate-100 bg-slate-50 p-3">
+                  <div className="mb-2 inline-flex rounded-lg bg-sky-100 p-2">
+                    <Phone size={18} className="text-blue-600" />
                   </div>
                   <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
                     Phone Number
@@ -167,9 +162,9 @@ export default function ProfilePage() {
                   </p>
                 </div>
 
-                <div className="rounded-xl border border-slate-100 bg-slate-50 p-4 sm:col-span-2">
-                  <div className="mb-3 inline-flex rounded-lg bg-emerald-100 p-3">
-                    <MapPin size={20} className="text-green-600" />
+                <div className="rounded-xl border border-slate-100 bg-slate-50 p-3 sm:col-span-2 xl:col-span-1 2xl:col-span-2">
+                  <div className="mb-2 inline-flex rounded-lg bg-emerald-100 p-2">
+                    <MapPin size={18} className="text-green-600" />
                   </div>
                   <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
                     Delivery Address
@@ -181,13 +176,13 @@ export default function ProfilePage() {
               </div>
             </section>
 
-            <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-              <h2 className="mb-5 text-xl font-black text-slate-950">
+            <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+              <h2 className="mb-3 text-lg font-black text-slate-950">
                 Account Details
               </h2>
-              <div className="rounded-xl border border-slate-100 bg-slate-50 p-4">
-                <div className="mb-3 inline-flex rounded-lg bg-violet-100 p-3">
-                  <CalendarDays size={20} className="text-purple-600" />
+              <div className="rounded-xl border border-slate-100 bg-slate-50 p-3">
+                <div className="mb-2 inline-flex rounded-lg bg-violet-100 p-2">
+                  <CalendarDays size={18} className="text-purple-600" />
                 </div>
                 <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
                   Member Since
@@ -197,11 +192,11 @@ export default function ProfilePage() {
                 </p>
               </div>
 
-              <div className="mt-4 rounded-xl bg-slate-950 p-5 text-white">
+              <div className="mt-3 rounded-xl bg-slate-950 p-4 text-white">
                 <p className="text-sm font-semibold text-white/70">
                   Account Health
                 </p>
-                <p className="mt-2 text-2xl font-black">
+                <p className="mt-1 text-xl font-black">
                   {authUser?.isBlocked ? "Action Needed" : "Good Standing"}
                 </p>
                 <p className="mt-1 text-sm text-white/70">
@@ -211,71 +206,71 @@ export default function ProfilePage() {
                 </p>
               </div>
             </section>
-          </div>
 
-          <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-            <div className="mb-5 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
-              <div>
-                <h2 className="text-xl font-black text-slate-950">
-                  Account Activity
-                </h2>
-                <p className="text-sm text-slate-500">
-                  A quick look at orders and support messages.
-                </p>
-              </div>
-            </div>
-
-            <div className="grid gap-4 md:grid-cols-3">
-              <div className="rounded-xl border border-slate-100 bg-orange-50 p-5">
-                <div className="flex items-center justify-between">
-                  <div className="rounded-lg bg-white p-3 shadow-sm">
-                    <Clock size={22} className="text-orange-600" />
-                  </div>
-                  <p className="text-3xl font-black text-slate-950">0</p>
-                </div>
-                <p className="mt-4 text-sm font-bold text-slate-700">
-                  Active Orders
-                </p>
-              </div>
-
-              <div className="rounded-xl border border-slate-100 bg-emerald-50 p-5">
-                <div className="flex items-center justify-between">
-                  <div className="rounded-lg bg-white p-3 shadow-sm">
-                    <Star size={22} className="text-green-600" />
-                  </div>
-                  <p className="text-3xl font-black text-slate-950">0</p>
-                </div>
-                <p className="mt-4 text-sm font-bold text-slate-700">
-                  Total Orders
-                </p>
-              </div>
-
-              <div className="rounded-xl border border-slate-100 bg-sky-50 p-5">
-                <div className="mb-4 flex items-center justify-between">
-                  <div className="rounded-lg bg-white p-3 shadow-sm">
-                    <MessageSquare size={22} className="text-blue-600" />
-                  </div>
-                  <p className="text-sm font-bold text-slate-700">
-                    Support Messages
+            <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+              <div className="mb-3 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                  <h2 className="text-lg font-black text-slate-950">
+                    Account Activity
+                  </h2>
+                  <p className="text-sm text-slate-500">
+                    A quick look at orders and support messages.
                   </p>
                 </div>
-                <div className="grid grid-cols-2 gap-2 text-sm">
-                  <span className="rounded-lg bg-white px-3 py-2 font-bold text-yellow-700">
-                    {supportCounts.pending} Pending
-                  </span>
-                  <span className="rounded-lg bg-white px-3 py-2 font-bold text-blue-700">
-                    {supportCounts.underReview} Review
-                  </span>
-                  <span className="rounded-lg bg-white px-3 py-2 font-bold text-green-700">
-                    {supportCounts.replied} Replied
-                  </span>
-                  <span className="rounded-lg bg-white px-3 py-2 font-bold text-slate-700">
-                    {supportCounts.closed} Closed
-                  </span>
+              </div>
+
+              <div className="grid gap-3 sm:grid-cols-3 xl:grid-cols-1 2xl:grid-cols-3">
+                <div className="rounded-xl border border-slate-100 bg-orange-50 p-3">
+                  <div className="flex items-center justify-between">
+                    <div className="rounded-lg bg-white p-2 shadow-sm">
+                      <Clock size={18} className="text-orange-600" />
+                    </div>
+                    <p className="text-2xl font-black text-slate-950">0</p>
+                  </div>
+                  <p className="mt-2 text-sm font-bold text-slate-700">
+                    Active Orders
+                  </p>
+                </div>
+
+                <div className="rounded-xl border border-slate-100 bg-emerald-50 p-3">
+                  <div className="flex items-center justify-between">
+                    <div className="rounded-lg bg-white p-2 shadow-sm">
+                      <Star size={18} className="text-green-600" />
+                    </div>
+                    <p className="text-2xl font-black text-slate-950">0</p>
+                  </div>
+                  <p className="mt-2 text-sm font-bold text-slate-700">
+                    Total Orders
+                  </p>
+                </div>
+
+                <div className="rounded-xl border border-slate-100 bg-sky-50 p-3">
+                  <div className="mb-3 flex items-center justify-between">
+                    <div className="rounded-lg bg-white p-2 shadow-sm">
+                      <MessageSquare size={18} className="text-blue-600" />
+                    </div>
+                    <p className="text-sm font-bold text-slate-700">
+                      Support Messages
+                    </p>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    <span className="rounded-lg bg-white px-2 py-1.5 font-bold text-yellow-700">
+                      {supportCounts.pending} Pending
+                    </span>
+                    <span className="rounded-lg bg-white px-2 py-1.5 font-bold text-blue-700">
+                      {supportCounts.underReview} Review
+                    </span>
+                    <span className="rounded-lg bg-white px-2 py-1.5 font-bold text-green-700">
+                      {supportCounts.replied} Replied
+                    </span>
+                    <span className="rounded-lg bg-white px-2 py-1.5 font-bold text-slate-700">
+                      {supportCounts.closed} Closed
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
-          </section>
+            </section>
+          </div>
         </div>
       ) : (
         <EditProfile setEditMode={setEditMode} />
