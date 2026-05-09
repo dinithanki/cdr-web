@@ -34,6 +34,7 @@ import AdminMessages from "./pages/admin/AdminMessages.jsx";
 import ProductsPage from "./pages/product/ProductsPage.jsx";
 import { useCartStore } from "./store/cartStore.js";
 import ScrollToTop from "./components/ScrollToTop";
+import ConfirmProvider from "./components/ui/ConfirmProvider.jsx";
 const App = () => {
   const { authUser, checkAuth, isCheckingAuth } = useAuthStore();
   const { hydrateGuestCart, syncAuthenticatedCart } = useCartStore();
@@ -64,8 +65,41 @@ const App = () => {
     );
   }
   return (
-    <div>
-      <Toaster position="top-right" />
+    <ConfirmProvider>
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          duration: 3200,
+          style: {
+            border: "1px solid #fed7aa",
+            borderRadius: "16px",
+            boxShadow: "0 18px 45px rgba(15, 23, 42, 0.16)",
+            color: "#0f172a",
+            fontWeight: 600,
+            padding: "14px 16px",
+          },
+          success: {
+            iconTheme: {
+              primary: "#059669",
+              secondary: "#ecfdf5",
+            },
+            style: {
+              borderColor: "#a7f3d0",
+              background: "#f0fdf4",
+            },
+          },
+          error: {
+            iconTheme: {
+              primary: "#dc2626",
+              secondary: "#fef2f2",
+            },
+            style: {
+              borderColor: "#fecaca",
+              background: "#fff7f7",
+            },
+          },
+        }}
+      />
       <ScrollToTop />
 
       <Routes>
@@ -120,7 +154,7 @@ const App = () => {
           <Route path="profile/edit" element={<AdminProfileEdit />} />
         </Route>
       </Routes>
-    </div>
+    </ConfirmProvider>
   );
 };
 
