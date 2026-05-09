@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { X, Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 import { useCartStore } from "../store/cartStore.js";
 import { useAuthStore } from "../store/authStore.js";
+import { confirmAction } from "../utils/confirmAction.js";
 
 const formatLkr = (value) =>
   new Intl.NumberFormat("en-LK", {
@@ -36,7 +37,13 @@ const CartDrawer = () => {
   };
 
   const handleClearCart = async () => {
-    const shouldClear = window.confirm("Clear all items from cart?");
+    const shouldClear = await confirmAction({
+      title: "Clear cart?",
+      message: "Clear all items from cart?",
+      confirmText: "Clear cart",
+      cancelText: "Keep items",
+      variant: "warning",
+    });
     if (!shouldClear) return;
 
     await clearCart({ persistToServer: Boolean(authUser) });
