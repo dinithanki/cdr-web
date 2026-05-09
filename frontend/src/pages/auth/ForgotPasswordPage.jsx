@@ -1,6 +1,10 @@
 import { useState } from "react";
+import LottieModule from "lottie-react";
 import { useAuthStore } from "../../store/authStore";
 import { useNavigate } from "react-router-dom";
+import forgotPasswordAnimation from "../../assets/fogetpassword.json";
+
+const Lottie = LottieModule.default || LottieModule;
 
 const ForgotPasswordPage = () => {
   const { forgotPassword, loading } = useAuthStore();
@@ -21,9 +25,7 @@ const ForgotPasswordPage = () => {
       <div className="w-full md:w-1/2 flex items-center justify-center bg-white px-6">
         <div className="w-full max-w-md">
           {/* Title */}
-          <h2 className="text-3xl font-bold text-gray-800">
-            Forgot Password 🔐
-          </h2>
+          <h2 className="text-3xl font-bold text-gray-800">Forgot Password</h2>
           <p className="text-gray-500 mt-1">
             Enter your email to receive a reset link
           </p>
@@ -62,19 +64,26 @@ const ForgotPasswordPage = () => {
         </div>
       </div>
 
-      {/* RIGHT SIDE - IMAGE */}
-      <div className="hidden md:flex w-1/2 relative">
-        <img
-          src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4"
-          alt="restaurant"
-          className="w-full h-full object-cover"
-        />
+      {/* RIGHT SIDE - ANIMATION */}
+      <div className="hidden md:flex w-1/2 relative overflow-hidden bg-orange-50">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(251,146,60,0.28),_transparent_35%),radial-gradient(circle_at_bottom_left,_rgba(253,224,71,0.28),_transparent_40%)]" />
 
-        {/* Overlay */}
-        <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-          <div className="text-center text-white px-6">
-            <h1 className="text-4xl font-bold">Secure Your Account 🔒</h1>
-            <p className="mt-3 text-lg">We’ll help you get back in safely</p>
+        <div className="relative z-10 flex h-full w-full flex-col items-center justify-center px-10 text-center">
+          <div className="w-full max-w-xl">
+            <Lottie
+              animationData={forgotPasswordAnimation}
+              loop
+              autoplay
+              aria-label="Forgot password security animation"
+              className="mx-auto w-full"
+            />
+          </div>
+
+          <div className="mt-4 text-gray-800">
+            <h1 className="text-4xl font-bold">Secure Your Account</h1>
+            <p className="mt-3 text-lg text-gray-600">
+              We'll help you get back in safely
+            </p>
           </div>
         </div>
       </div>
