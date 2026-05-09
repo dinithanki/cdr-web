@@ -1,7 +1,11 @@
 import { useState } from "react";
+import LottieModule from "lottie-react";
 import { useParams, useNavigate } from "react-router-dom";
 import { axiosInstance } from "../../api/axios";
 import toast from "react-hot-toast";
+import resetAnimation from "../../assets/reset.json";
+
+const Lottie = LottieModule.default || LottieModule;
 
 const ResetPasswordPage = () => {
   const { token } = useParams();
@@ -99,19 +103,24 @@ const ResetPasswordPage = () => {
         </div>
       </div>
 
-      {/* RIGHT SIDE - IMAGE */}
-      <div className="hidden md:flex w-1/2 relative">
-        <img
-          src="https://images.unsplash.com/photo-1504674900247-0877df9cc836"
-          alt="restaurant"
-          className="w-full h-full object-cover"
-        />
+      {/* RIGHT SIDE - ANIMATION */}
+      <div className="hidden md:flex w-1/2 relative overflow-hidden bg-orange-50">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(251,146,60,0.28),_transparent_35%),radial-gradient(circle_at_bottom_left,_rgba(253,224,71,0.28),_transparent_40%)]" />
 
-        {/* Overlay */}
-        <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-          <div className="text-center text-white px-6">
-            <h1 className="text-4xl font-bold">Fresh Start 🔄</h1>
-            <p className="mt-3 text-lg">
+        <div className="relative z-10 flex h-full w-full flex-col items-center justify-center px-10 text-center">
+          <div className="w-full max-w-xl">
+            <Lottie
+              animationData={resetAnimation}
+              loop
+              autoplay
+              aria-label="Reset password animation"
+              className="mx-auto w-full"
+            />
+          </div>
+
+          <div className="mt-4 text-gray-800">
+            <h1 className="text-4xl font-bold">Fresh Start</h1>
+            <p className="mt-3 text-lg text-gray-600">
               Secure your account with a new password
             </p>
           </div>
