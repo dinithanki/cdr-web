@@ -1,6 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import LottieModule from "lottie-react";
 import { useAuthStore } from "../../store/authStore.js";
 import { useNavigate } from "react-router-dom";
+import loginAnimation from "../../assets/login.json";
+
+const Lottie = LottieModule.default || LottieModule;
 
 const LoginPage = () => {
   const { login, isLoggingIn } = useAuthStore();
@@ -114,19 +118,26 @@ const LoginPage = () => {
         </div>
       </div>
 
-      {/* RIGHT SIDE - IMAGE / BRAND */}
-      <div className="hidden md:flex w-1/2 relative">
-        <img
-          src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5"
-          alt="restaurant"
-          className="w-full h-full object-cover"
-        />
+      {/* RIGHT SIDE - ANIMATION / BRAND */}
+      <div className="hidden md:flex w-1/2 relative overflow-hidden bg-orange-50">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(251,146,60,0.28),_transparent_35%),radial-gradient(circle_at_bottom_left,_rgba(253,224,71,0.28),_transparent_40%)]" />
 
-        {/* Overlay */}
-        <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-          <div className="text-center text-white px-6">
-            <h1 className="text-4xl font-bold">Delicious Moments 🍽️</h1>
-            <p className="mt-3 text-lg">Manage your restaurant with ease</p>
+        <div className="relative z-10 flex h-full w-full flex-col items-center justify-center px-10 text-center">
+          <div className="w-full max-w-xl">
+            <Lottie
+              animationData={loginAnimation}
+              loop
+              autoplay
+              aria-label="Online food ordering animation"
+              className="mx-auto w-full"
+            />
+          </div>
+
+          <div className="mt-4 text-gray-800">
+            <h1 className="text-4xl font-bold">Delicious Moments</h1>
+            <p className="mt-3 text-lg text-gray-600">
+              Manage your restaurant with ease
+            </p>
           </div>
         </div>
       </div>
