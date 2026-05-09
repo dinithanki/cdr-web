@@ -41,216 +41,241 @@ export default function ProfilePage() {
   const profileImage = authUser.profilePic?.trim()
     ? authUser.profilePic
     : DEFAULT_PROFILE_IMAGE;
+  const memberSince = authUser.createdAt
+    ? new Date(authUser.createdAt).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })
+    : "Not available";
+  const supportCounts = {
+    pending: myContacts.filter((c) => c.status === "Pending").length,
+    underReview: myContacts.filter((c) => c.status === "Under Review").length,
+    replied: myContacts.filter((c) => c.status === "Replied").length,
+    closed: myContacts.filter((c) => c.status === "Closed").length,
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50 px-4 pb-12 pt-6 sm:px-6">
+    <div className="min-h-screen bg-[#f8fafc] px-4 pb-14 pt-8 sm:px-6">
       {!editMode ? (
-        <div className="mx-auto w-full max-w-4xl">
-          {/* Header Banner */}
-          <div className="mb-8 rounded-2xl bg-gradient-to-r from-orange-500 via-red-500 to-orange-600 p-8 text-white shadow-xl sm:p-12">
-            <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start">
+        <div className="mx-auto w-full max-w-6xl">
+          <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-orange-600">
+                My Account
+              </p>
+              <h1 className="mt-1 text-3xl font-black text-slate-950 sm:text-4xl">
+                Hello, {authUser.firstName || "there"}
+              </h1>
+            </div>
+            <p className="max-w-xl text-sm text-slate-500 sm:text-right">
+              Keep your delivery details and account preferences up to date.
+            </p>
+          </div>
+
+          <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+            <div className="h-28 bg-linear-to-r from-orange-700 via-orange-600 to-red-600" />
+            <div className="-mt-14 flex flex-col gap-6 px-5 pb-6 sm:flex-row sm:items-end sm:px-8">
               <img
                 src={profileImage}
-                alt={fullName || "profile"}
-                className="h-32 w-32 rounded-full border-4 border-white object-cover shadow-lg sm:h-40 sm:w-40"
+                alt={fullName || "Profile"}
+                className="h-28 w-28 rounded-2xl border-4 border-white object-cover shadow-lg"
               />
-              <div className="flex-1 text-center sm:text-left">
-                <h1 className="text-3xl font-bold sm:text-4xl">
-                  {fullName || "Guest User"}
-                </h1>
-                <div className="mt-2 flex items-center justify-center gap-2 sm:justify-start">
-                  <span className="inline-block rounded-full bg-white/20 px-4 py-1 text-sm font-semibold capitalize">
-                    {authUser.role || "customer"}
-                  </span>
-                  {authUser?.isBlocked ? (
-                    <span className="inline-block rounded-full bg-red-400 px-4 py-1 text-sm font-semibold">
-                      Blocked
-                    </span>
-                  ) : (
-                    <span className="inline-block rounded-full bg-emerald-400 px-4 py-1 text-sm font-semibold">
-                      Active
-                    </span>
-                  )}
+
+              <div className="flex-1">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">
+                      Profile Overview
+                    </p>
+                    <h2 className="mt-1 text-2xl font-black text-slate-950 sm:text-3xl">
+                      {fullName || "Guest User"}
+                    </h2>
+                    <p className="mt-1 text-sm font-medium text-slate-500">
+                      Member since {memberSince}
+                    </p>
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      <span className="rounded-full bg-orange-50 px-3 py-1 text-xs font-bold capitalize text-orange-700 ring-1 ring-orange-100">
+                        {authUser.role || "customer"}
+                      </span>
+                      {authUser?.isBlocked ? (
+                        <span className="rounded-full bg-red-50 px-3 py-1 text-xs font-bold text-red-700 ring-1 ring-red-100">
+                          Blocked
+                        </span>
+                      ) : (
+                        <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700 ring-1 ring-emerald-100">
+                          Active
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex gap-3">
+                    <button
+                      onClick={() => setEditMode(true)}
+                      className="inline-flex items-center justify-center gap-2 rounded-lg bg-slate-950 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-slate-800"
+                    >
+                      <Edit2 size={16} />
+                      Edit
+                    </button>
+                    <button
+                      onClick={logout}
+                      className="inline-flex items-center justify-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-2.5 text-sm font-bold text-red-700 transition hover:bg-red-100"
+                    >
+                      <LogOut size={16} />
+                      Logout
+                    </button>
+                  </div>
                 </div>
-                <p className="mt-4 text-sm leading-relaxed text-white/90">
-                  Manage your account, view order history, and update your
-                  preferences
-                </p>
               </div>
             </div>
-          </div>
+          </section>
 
-          {/* Quick Actions */}
-          <div className="mb-8 grid gap-4 sm:grid-cols-2">
-            <button
-              onClick={() => setEditMode(true)}
-              className="flex items-center justify-center gap-2 rounded-xl bg-white px-6 py-3 font-semibold text-orange-600 shadow-md transition hover:shadow-lg hover:bg-orange-50"
-            >
-              <Edit2 size={18} />
-              Edit Profile
-            </button>
-            <button
-              onClick={logout}
-              className="flex items-center justify-center gap-2 rounded-xl bg-white px-6 py-3 font-semibold text-red-600 shadow-md transition hover:shadow-lg hover:bg-red-50"
-            >
-              <LogOut size={18} />
-              Logout
-            </button>
-          </div>
+          <div className="mt-6 grid gap-6 lg:grid-cols-[1.4fr_0.9fr]">
+            <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+              <div className="mb-5 flex items-center justify-between gap-4">
+                <h2 className="text-xl font-black text-slate-950">
+                  Contact Details
+                </h2>
+                <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600">
+                  Customer Info
+                </span>
+              </div>
 
-          {/* Contact Information */}
-          <div className="mb-8">
-            <h2 className="mb-4 text-2xl font-bold text-slate-900">
-              Contact Information
-            </h2>
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="rounded-xl bg-white p-6 shadow-md transition hover:shadow-lg">
-                <div className="flex items-start gap-4">
-                  <div className="rounded-lg bg-orange-100 p-3">
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="rounded-xl border border-slate-100 bg-slate-50 p-4">
+                  <div className="mb-3 inline-flex rounded-lg bg-orange-100 p-3">
                     <Mail size={20} className="text-orange-600" />
                   </div>
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                      Email Address
-                    </p>
-                    <p className="mt-1 font-medium text-slate-800">
-                      {authUser.email}
-                    </p>
-                  </div>
+                  <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
+                    Email Address
+                  </p>
+                  <p className="mt-1 break-words font-semibold text-slate-900">
+                    {authUser.email}
+                  </p>
                 </div>
-              </div>
 
-              <div className="rounded-xl bg-white p-6 shadow-md transition hover:shadow-lg">
-                <div className="flex items-start gap-4">
-                  <div className="rounded-lg bg-blue-100 p-3">
+                <div className="rounded-xl border border-slate-100 bg-slate-50 p-4">
+                  <div className="mb-3 inline-flex rounded-lg bg-sky-100 p-3">
                     <Phone size={20} className="text-blue-600" />
                   </div>
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                      Phone Number
-                    </p>
-                    <p className="mt-1 font-medium text-slate-800">
-                      {authUser.phoneNumber || "Not set"}
-                    </p>
-                  </div>
+                  <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
+                    Phone Number
+                  </p>
+                  <p className="mt-1 font-semibold text-slate-900">
+                    {authUser.phoneNumber || "Not set"}
+                  </p>
                 </div>
-              </div>
-            </div>
-          </div>
 
-          {/* Address & Account Details */}
-          <div className="mb-8 grid gap-6 sm:grid-cols-2">
-            <div>
-              <h2 className="mb-4 text-2xl font-bold text-slate-900">
-                Delivery Address
-              </h2>
-              <div className="rounded-xl bg-white p-6 shadow-md transition hover:shadow-lg">
-                <div className="flex items-start gap-4">
-                  <div className="rounded-lg bg-green-100 p-3">
+                <div className="rounded-xl border border-slate-100 bg-slate-50 p-4 sm:col-span-2">
+                  <div className="mb-3 inline-flex rounded-lg bg-emerald-100 p-3">
                     <MapPin size={20} className="text-green-600" />
                   </div>
-                  <div className="flex-1">
-                    <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                      Street Address
-                    </p>
-                    <p className="mt-1 font-medium text-slate-800">
-                      {authUser.address || "Not set"}
-                    </p>
-                  </div>
+                  <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
+                    Delivery Address
+                  </p>
+                  <p className="mt-1 font-semibold text-slate-900">
+                    {authUser.address || "Not set"}
+                  </p>
                 </div>
               </div>
-            </div>
+            </section>
 
-            <div>
-              <h2 className="mb-4 text-2xl font-bold text-slate-900">
+            <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+              <h2 className="mb-5 text-xl font-black text-slate-950">
                 Account Details
               </h2>
-              <div className="space-y-4">
-                <div className="rounded-xl bg-white p-6 shadow-md transition hover:shadow-lg">
-                  <div className="flex items-start gap-4">
-                    <div className="rounded-lg bg-purple-100 p-3">
-                      <CalendarDays size={20} className="text-purple-600" />
-                    </div>
-                    <div>
-                      <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                        Member Since
-                      </p>
-                      <p className="mt-1 font-medium text-slate-800">
-                        {authUser.createdAt
-                          ? new Date(authUser.createdAt).toLocaleDateString(
-                              "en-US",
-                              {
-                                year: "numeric",
-                                month: "long",
-                                day: "numeric",
-                              },
-                            )
-                          : "Not available"}
-                      </p>
-                    </div>
-                  </div>
+              <div className="rounded-xl border border-slate-100 bg-slate-50 p-4">
+                <div className="mb-3 inline-flex rounded-lg bg-violet-100 p-3">
+                  <CalendarDays size={20} className="text-purple-600" />
                 </div>
+                <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
+                  Member Since
+                </p>
+                <p className="mt-1 font-semibold text-slate-900">
+                  {memberSince}
+                </p>
               </div>
-            </div>
+
+              <div className="mt-4 rounded-xl bg-slate-950 p-5 text-white">
+                <p className="text-sm font-semibold text-white/70">
+                  Account Health
+                </p>
+                <p className="mt-2 text-2xl font-black">
+                  {authUser?.isBlocked ? "Action Needed" : "Good Standing"}
+                </p>
+                <p className="mt-1 text-sm text-white/70">
+                  {authUser?.isBlocked
+                    ? "Please contact support to review your account."
+                    : "Your account is active and ready for orders."}
+                </p>
+              </div>
+            </section>
           </div>
 
-          {/* Account Statistics */}
-          <div>
-            <h2 className="mb-4 text-2xl font-bold text-slate-900">
-              Account Statistics
-            </h2>
-            <div className="grid gap-4 sm:grid-cols-3">
-              <div className="rounded-xl bg-white p-6 shadow-md text-center transition hover:shadow-lg">
-                <div className="inline-flex rounded-lg bg-orange-100 p-3">
-                  <Clock size={24} className="text-orange-600" />
-                </div>
-                <p className="mt-4 text-3xl font-bold text-slate-900">0</p>
-                <p className="text-sm text-slate-600">Active Orders</p>
-              </div>
-              <div className="rounded-xl bg-white p-6 shadow-md text-center transition hover:shadow-lg">
-                <div className="inline-flex rounded-lg bg-green-100 p-3">
-                  <Star size={24} className="text-green-600" />
-                </div>
-                <p className="mt-4 text-3xl font-bold text-slate-900">0</p>
-                <p className="text-sm text-slate-600">Total Orders</p>
-              </div>
-              <div className="rounded-xl bg-white p-6 shadow-md text-center transition hover:shadow-lg">
-                <div className="inline-flex rounded-lg bg-blue-100 p-3">
-                  <MessageSquare size={24} className="text-blue-600" />
-                </div>
-                <p className="mt-4 flex flex-wrap justify-center gap-x-4 gap-y-2 text-lg font-bold text-slate-900">
-                  <span className="text-yellow-600" title="Pending Messages">
-                    {myContacts.filter((c) => c.status === "Pending").length}{" "}
-                    <span className="text-xs text-slate-500 font-normal">
-                      Pending
-                    </span>
-                  </span>
-                  <span className="text-blue-500" title="Under Review Messages">
-                    {
-                      myContacts.filter((c) => c.status === "Under Review")
-                        .length
-                    }{" "}
-                    <span className="text-xs text-slate-500 font-normal">
-                      Under Review
-                    </span>
-                  </span>
-                  <span className="text-green-600" title="Replied Messages">
-                    {myContacts.filter((c) => c.status === "Replied").length}{" "}
-                    <span className="text-xs text-slate-500 font-normal">
-                      Replied
-                    </span>
-                  </span>
-                  <span className="text-slate-600" title="Closed Messages">
-                    {myContacts.filter((c) => c.status === "Closed").length}{" "}
-                    <span className="text-xs text-slate-500 font-normal">
-                      Closed
-                    </span>
-                  </span>
+          <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+            <div className="mb-5 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <h2 className="text-xl font-black text-slate-950">
+                  Account Activity
+                </h2>
+                <p className="text-sm text-slate-500">
+                  A quick look at orders and support messages.
                 </p>
-                <p className="text-sm text-slate-600 mt-2">Support Messages</p>
               </div>
             </div>
-          </div>
+
+            <div className="grid gap-4 md:grid-cols-3">
+              <div className="rounded-xl border border-slate-100 bg-orange-50 p-5">
+                <div className="flex items-center justify-between">
+                  <div className="rounded-lg bg-white p-3 shadow-sm">
+                    <Clock size={22} className="text-orange-600" />
+                  </div>
+                  <p className="text-3xl font-black text-slate-950">0</p>
+                </div>
+                <p className="mt-4 text-sm font-bold text-slate-700">
+                  Active Orders
+                </p>
+              </div>
+
+              <div className="rounded-xl border border-slate-100 bg-emerald-50 p-5">
+                <div className="flex items-center justify-between">
+                  <div className="rounded-lg bg-white p-3 shadow-sm">
+                    <Star size={22} className="text-green-600" />
+                  </div>
+                  <p className="text-3xl font-black text-slate-950">0</p>
+                </div>
+                <p className="mt-4 text-sm font-bold text-slate-700">
+                  Total Orders
+                </p>
+              </div>
+
+              <div className="rounded-xl border border-slate-100 bg-sky-50 p-5">
+                <div className="mb-4 flex items-center justify-between">
+                  <div className="rounded-lg bg-white p-3 shadow-sm">
+                    <MessageSquare size={22} className="text-blue-600" />
+                  </div>
+                  <p className="text-sm font-bold text-slate-700">
+                    Support Messages
+                  </p>
+                </div>
+                <div className="grid grid-cols-2 gap-2 text-sm">
+                  <span className="rounded-lg bg-white px-3 py-2 font-bold text-yellow-700">
+                    {supportCounts.pending} Pending
+                  </span>
+                  <span className="rounded-lg bg-white px-3 py-2 font-bold text-blue-700">
+                    {supportCounts.underReview} Review
+                  </span>
+                  <span className="rounded-lg bg-white px-3 py-2 font-bold text-green-700">
+                    {supportCounts.replied} Replied
+                  </span>
+                  <span className="rounded-lg bg-white px-3 py-2 font-bold text-slate-700">
+                    {supportCounts.closed} Closed
+                  </span>
+                </div>
+              </div>
+            </div>
+          </section>
         </div>
       ) : (
         <EditProfile setEditMode={setEditMode} />
