@@ -10,6 +10,8 @@ import {
   AlertCircle,
 } from "lucide-react";
 import ReviewModal from "../../components/ReviewModal.jsx";
+import toast from "react-hot-toast";
+import { confirmAction } from "../../utils/confirmAction.js";
 
 const formatCurrency = (value) =>
   new Intl.NumberFormat("en-LK", {
@@ -124,7 +126,7 @@ function Orders() {
 
   const handleSaveReview = async (reviewId) => {
     if (editingRating === 0) {
-      alert("Please select a rating");
+      toast.error("Please select a rating");
       return;
     }
     try {
@@ -138,14 +140,22 @@ function Orders() {
   };
 
   const handleDeleteReview = async (reviewId) => {
-    if (window.confirm("Are you sure you want to delete this review?")) {
-      try {
-        await deleteReview(reviewId);
-        const reviewsData = await getUserReviews();
-        setUserReviews(reviewsData);
-      } catch (error) {
-        console.error("Failed to delete review:", error);
-      }
+    const shouldDelete = await confirmAction({
+      title: "Delete review?",
+      message: "Are you sure you want to delete this review?",
+      confirmText: "Delete",
+      cancelText: "Keep review",
+      variant: "danger",
+    });
+
+    if (!shouldDelete) return;
+
+    try {
+      await deleteReview(reviewId);
+      const reviewsData = await getUserReviews();
+      setUserReviews(reviewsData);
+    } catch (error) {
+      console.error("Failed to delete review:", error);
     }
   };
 
