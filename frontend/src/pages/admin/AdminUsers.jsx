@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import { useAdminStore } from "../../store/adminStore.js";
-import { useAuthStore } from "../../store/authStore.js";
+import { confirmAction } from "../../utils/confirmAction.js";
 
 export default function AdminUsers() {
   const { users, loading, getUsers, deleteUser, updateUser } = useAdminStore();
-  const { authUser } = useAuthStore();
 
   const [selectedUser, setSelectedUser] = useState(null);
   const [viewUser, setViewUser] = useState(null);
@@ -90,9 +89,13 @@ export default function AdminUsers() {
   const handleDelete = async (user) => {
     if (!user?._id) return;
 
-    const shouldDelete = window.confirm(
-      `Delete ${getFullName(user)}? This action cannot be undone.`,
-    );
+    const shouldDelete = await confirmAction({
+      title: "Delete user?",
+      message: `Delete ${getFullName(user)}? This action cannot be undone.`,
+      confirmText: "Delete",
+      cancelText: "Keep user",
+      variant: "danger",
+    });
 
     if (!shouldDelete) return;
     await deleteUser(user._id);
