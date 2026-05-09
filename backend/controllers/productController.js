@@ -2,6 +2,12 @@ import Product from "../models/product.js";
 import { uploadProductImage } from "../services/uploadService.js";
 const DEFAULT_PRODUCT_IMAGE = "https://picsum.photos/id/237/200/300";
 
+const parseBoolean = (value, fallback = true) => {
+  if (value === undefined) return fallback;
+  if (typeof value === "boolean") return value;
+  return value === "true";
+};
+
 export const getAllProducts = async (req, res) => {
   try {
     const products = await Product.find({ isAvailable: true }).sort({
@@ -60,7 +66,7 @@ export const getProductById = async (req, res) => {
 
 export const createProduct = async (req, res) => {
   try {
-    const { name, description, price, category, preparationTime, size } =
+    const { name, description, price, category, preparationTime, size, isAvailable } =
       req.body;
 
     const trimmedName = name?.trim();
@@ -94,6 +100,7 @@ export const createProduct = async (req, res) => {
       category,
       preparationTime,
       size,
+      isAvailable: parseBoolean(isAvailable, true),
       image: imageUrl,
     });
 
@@ -146,7 +153,7 @@ export const updateProduct = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const { name, description, price, category, preparationTime, size } =
+    const { name, description, price, category, preparationTime, size, isAvailable } =
       req.body;
 
     const product = await Product.findById(id);
@@ -185,11 +192,12 @@ export const updateProduct = async (req, res) => {
 
     // 3. Update fields
     product.name = trimmedName || product.name;
-    product.description = description || product.description;
-    product.price = price || product.price;
-    product.category = category || product.category;
-    product.preparationTime = preparationTime || product.preparationTime;
-    product.size = size || product.size;
+    product.description = description ?? product.description;
+    product.price = price ?? product.price;
+    product.category = category ?? product.category;
+    product.preparationTime = preparationTime ?? product.preparationTime;
+    product.size = size ?? product.size;
+    product.isAvailable = parseBoolean(isAvailable, product.isAvailable);
     product.image = imageUrl;
 
     await product.save();
