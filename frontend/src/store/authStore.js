@@ -5,8 +5,8 @@ import { auth } from "../config/firebase";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { signOut } from "firebase/auth";
 const provider = new GoogleAuthProvider();
-import { sendPasswordResetEmail } from "firebase/auth";
 import { useCartStore } from "./cartStore.js";
+import { confirmAction } from "../utils/confirmAction.js";
 
 export const useAuthStore = create((set) => ({
   authUser: null,
@@ -20,7 +20,7 @@ export const useAuthStore = create((set) => ({
     try {
       const res = await axiosInstance.get("/users/check");
       set({ authUser: res.data });
-    } catch (error) {
+    } catch {
       set({ authUser: null });
     } finally {
       set({ isCheckingAuth: false });
@@ -55,7 +55,13 @@ export const useAuthStore = create((set) => ({
   },
 
   logout: async () => {
-    const confirmLogout = window.confirm("Are you sure you want to logout?");
+    const confirmLogout = await confirmAction({
+      title: "Logout?",
+      message: "Are you sure you want to logout?",
+      confirmText: "Yes, logout",
+      cancelText: "Stay logged in",
+      variant: "logout",
+    });
 
     if (!confirmLogout) return; // stop if user clicks Cancel
     try {
@@ -68,7 +74,7 @@ export const useAuthStore = create((set) => ({
       useCartStore.getState().resetCart();
 
       toast.success("Logged out successfully!");
-    } catch (error) {
+    } catch {
       toast.error("Logout failed");
     }
   },
