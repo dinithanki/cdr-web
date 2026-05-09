@@ -1,12 +1,6 @@
 import { useEffect, useState } from "react";
 import { useProductStore } from "../../store/useProductStore.js";
-
-const formatCurrency = (value) =>
-  new Intl.NumberFormat("en-LK", {
-    style: "currency",
-    currency: "LKR",
-    maximumFractionDigits: 0,
-  }).format(Number(value) || 0);
+import { confirmAction } from "../../utils/confirmAction.js";
 
 export default function AdminProducts() {
   const {
@@ -145,9 +139,13 @@ export default function AdminProducts() {
   const handleDelete = async (product) => {
     if (!product?._id) return;
 
-    const shouldDelete = window.confirm(
-      `Delete ${product.name}? This action cannot be undone.`,
-    );
+    const shouldDelete = await confirmAction({
+      title: "Delete product?",
+      message: `Delete ${product.name}? This action cannot be undone.`,
+      confirmText: "Delete",
+      cancelText: "Keep product",
+      variant: "danger",
+    });
 
     if (!shouldDelete) return;
     await deleteProduct(product._id);
