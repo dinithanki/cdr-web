@@ -1,11 +1,32 @@
 import Product from "../models/product.js";
 import { uploadProductImage } from "../services/uploadService.js";
 const DEFAULT_PRODUCT_IMAGE = "https://picsum.photos/id/237/200/300";
+const SUPABASE_PUBLIC_STORAGE_URL = `${process.env.SUPABASE_URL}/storage/v1/object/public/uploads`;
 
 const parseBoolean = (value, fallback = true) => {
   if (value === undefined) return fallback;
   if (typeof value === "boolean") return value;
   return value === "true";
+};
+
+const resolveProductImage = (image) => {
+  if (!image?.trim()) return DEFAULT_PRODUCT_IMAGE;
+  if (/^https?:\/\//i.test(image)) return image;
+
+  const imagePath = image.startsWith("products/")
+    ? image
+    : `products/${image}`;
+
+  return `${SUPABASE_PUBLIC_STORAGE_URL}/${encodeURI(imagePath)}`;
+};
+
+const serializeProduct = (product) => {
+  const productObject = product.toObject ? product.toObject() : product;
+
+  return {
+    ...productObject,
+    image: resolveProductImage(productObject.image),
+  };
 };
 
 export const getAllProducts = async (req, res) => {
@@ -16,7 +37,7 @@ export const getAllProducts = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      data: products,
+      data: products.map(serializeProduct),
     });
   } catch (error) {
     res.status(500).json({
@@ -31,7 +52,7 @@ export const getAllProductsAdmin = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      data: products,
+      data: products.map(serializeProduct),
     });
   } catch (error) {
     res.status(500).json({
@@ -54,7 +75,7 @@ export const getProductById = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      data: product,
+      data: serializeProduct(product),
     });
   } catch (error) {
     res.status(500).json({
@@ -110,7 +131,7 @@ export const createProduct = async (req, res) => {
     res.status(201).json({
       success: true,
       message: "Product created successfully",
-      product,
+      product: serializeProduct(product),
     });
   } catch (error) {
     console.log(error);
@@ -205,7 +226,7 @@ export const updateProduct = async (req, res) => {
     res.status(200).json({
       success: true,
       message: "Product updated successfully",
-      product,
+      product: serializeProduct(product),
     });
   } catch (error) {
     console.log(error);
