@@ -1,16 +1,17 @@
 import User from "../models/user.js";
 import { uploadProfileImage } from "../services/uploadService.js";
 import bcrypt from "bcryptjs";
-import { generateToken } from "../utils/generateToken.js";
+import { generateToken, getAuthCookieOptions } from "../utils/generateToken.js";
 import crypto from "crypto";
 import { sendEmail } from "../services/emailService.js";
+import { resolvePublicStorageUrl } from "../utils/storageUrl.js";
 
 const serializeUser = (user) => ({
   _id: user._id,
   firstName: user.firstName,
   lastName: user.lastName,
   email: user.email,
-  profilePic: user.profilePic,
+  profilePic: resolvePublicStorageUrl(user.profilePic, "users", ""),
   phoneNumber: user.phoneNumber,
   address: user.address,
   role: user.role,
@@ -109,12 +110,7 @@ export const login = async (req, res) => {
 
 export const logout = (req, res) => {
   try {
-    res.clearCookie("jwt", {
-      httpOnly: true,
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
-      secure: process.env.NODE_ENV === "production",
-      path: "/",
-    });
+    res.clearCookie("jwt", getAuthCookieOptions());
 
     return res.status(200).json({
       success: true,
@@ -164,6 +160,10 @@ export const makeAdmin = async (req, res) => {
 };
 export const checkAuth = async (req, res) => {
   try {
+    if (!req.user) {
+      return res.status(200).json(null);
+    }
+
     res.status(200).json(serializeUser(req.user));
   } catch (error) {
     console.error("Error in checkAuth controller:", error);

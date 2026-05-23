@@ -23,16 +23,15 @@ const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.email || !form.password) return;
-    console.log("Login successful, checking user role...");
+
     const user = await login(form);
-    console.log("Logged in user:", user);
+
+    if (!user) return;
 
     if (user?.role === "admin") {
-      console.log("Admin logged in, navigating to dashboard");
       navigate("/admin/dashboard");
     } else {
       navigate("/");
-      console.log("User logged in, navigating to home");
     }
   };
   const handleGoogleLogin = async () => {

@@ -1,5 +1,19 @@
 import jwt from "jsonwebtoken";
 
+export const getAuthCookieOptions = () => {
+  const isProductionLike =
+    process.env.NODE_ENV === "production" ||
+    Boolean(process.env.RENDER) ||
+    process.env.CLIENT_URL?.startsWith("https://");
+
+  return {
+    httpOnly: true,
+    sameSite: isProductionLike ? "none" : "lax",
+    secure: isProductionLike,
+    path: "/",
+  };
+};
+
 export const generateToken = (user, res) => {
   const userId = user?.id || user?._id;
 
@@ -12,9 +26,7 @@ export const generateToken = (user, res) => {
   );
   res.cookie("jwt", token, {
     maxAge: 7 * 24 * 60 * 60 * 1000, //7 days
-    httpOnly: true, //prevent client side js from accessing the cookie
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
-    secure: process.env.NODE_ENV !== "development", //only send cookie over https in production
+    ...getAuthCookieOptions(),
   });
 
   return token;

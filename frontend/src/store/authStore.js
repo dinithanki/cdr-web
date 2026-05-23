@@ -100,8 +100,7 @@ export const useAuthStore = create((set) => ({
       toast.success("Google login successful!");
 
       return res.data; // ✅ ADD THIS
-    } catch (err) {
-      console.log(err);
+    } catch {
       set({ loading: false });
       toast.error("Google login failed");
     }

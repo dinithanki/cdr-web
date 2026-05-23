@@ -1,7 +1,8 @@
 import Product from "../models/product.js";
 import { uploadProductImage } from "../services/uploadService.js";
+import { resolvePublicStorageUrl } from "../utils/storageUrl.js";
+
 const DEFAULT_PRODUCT_IMAGE = "https://picsum.photos/id/237/200/300";
-const SUPABASE_PUBLIC_STORAGE_URL = `${process.env.SUPABASE_URL}/storage/v1/object/public/uploads`;
 
 const parseBoolean = (value, fallback = true) => {
   if (value === undefined) return fallback;
@@ -9,16 +10,8 @@ const parseBoolean = (value, fallback = true) => {
   return value === "true";
 };
 
-const resolveProductImage = (image) => {
-  if (!image?.trim()) return DEFAULT_PRODUCT_IMAGE;
-  if (/^https?:\/\//i.test(image)) return image;
-
-  const imagePath = image.startsWith("products/")
-    ? image
-    : `products/${image}`;
-
-  return `${SUPABASE_PUBLIC_STORAGE_URL}/${encodeURI(imagePath)}`;
-};
+const resolveProductImage = (image) =>
+  resolvePublicStorageUrl(image, "products", DEFAULT_PRODUCT_IMAGE);
 
 const serializeProduct = (product) => {
   const productObject = product.toObject ? product.toObject() : product;

@@ -13,7 +13,11 @@ import {
   clearCart,
 } from "../controllers/cartController.js";
 import { upload } from "../middlewares/uploadMiddleware.js";
-import { protect, adminOnly } from "../middlewares/authMiddleware.js";
+import {
+  protect,
+  optionalProtect,
+  adminOnly,
+} from "../middlewares/authMiddleware.js";
 import { checkAuth } from "../controllers/userController.js";
 import { googleLogin } from "../controllers/userController.js";
 import {
@@ -27,7 +31,7 @@ import {
 
 const router = express.Router();
 
-router.get("/check", protect, checkAuth);
+router.get("/check", optionalProtect, checkAuth);
 
 router.post("/signup", signup);
 router.post("/login", login);
