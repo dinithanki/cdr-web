@@ -3,6 +3,9 @@ import { useAuthStore } from "../../store/authStore.js";
 import AdminProfileEdit from "./AdminProfileEdit";
 import { Mail, Phone, MapPin, LogOut, Edit3, ShieldCheck } from "lucide-react";
 
+const DEFAULT_PROFILE_IMAGE =
+  "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=600&q=80";
+
 export default function AdminProfilePage() {
   const { authUser, logout } = useAuthStore();
   const [editMode, setEditMode] = useState(false);
@@ -28,9 +31,12 @@ export default function AdminProfilePage() {
               {/* Profile Image */}
               <div className="relative">
                 <img
-                  src={authUser.profilePic || "/default-avatar.png"}
+                  src={authUser.profilePic || DEFAULT_PROFILE_IMAGE}
                   alt="profile"
                   className="h-32 w-32 rounded-2xl object-cover border-4 border-orange-400 shadow-lg sm:h-40 sm:w-40"
+                  onError={(e) => {
+                    e.currentTarget.src = DEFAULT_PROFILE_IMAGE;
+                  }}
                 />
                 <div className="absolute -bottom-2 -right-2 rounded-full bg-green-500 p-3 shadow-lg">
                   <ShieldCheck className="h-5 w-5 text-white" />

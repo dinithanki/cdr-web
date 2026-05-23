@@ -2,6 +2,9 @@ import { useState } from "react";
 import { useAuthStore } from "../../store/authStore.js";
 import { Camera, Save, X } from "lucide-react";
 
+const DEFAULT_PROFILE_IMAGE =
+  "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=600&q=80";
+
 export default function AdminProfileEdit({ setEditMode }) {
   const { authUser, updateProfile, isUpdatingProfile } = useAuthStore();
 
@@ -75,9 +78,12 @@ export default function AdminProfileEdit({ setEditMode }) {
               {/* Current Image Preview */}
               <div className="relative">
                 <img
-                  src={preview || "/default-avatar.png"}
+                  src={preview || DEFAULT_PROFILE_IMAGE}
                   alt="profile preview"
                   className="h-32 w-32 rounded-2xl object-cover border-4 border-orange-400 shadow-lg"
+                  onError={(e) => {
+                    e.currentTarget.src = DEFAULT_PROFILE_IMAGE;
+                  }}
                 />
                 <label
                   htmlFor="image-input"

@@ -4,6 +4,9 @@ import { useCartStore } from "../store/cartStore.js";
 import { useAuthStore } from "../store/authStore.js";
 import { confirmAction } from "../utils/confirmAction.js";
 
+const PRODUCT_IMAGE_FALLBACK =
+  "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=400&q=80";
+
 const formatLkr = (value) =>
   new Intl.NumberFormat("en-LK", {
     style: "currency",
@@ -107,6 +110,9 @@ const CartDrawer = () => {
                   src={item.image}
                   alt={item.name}
                   className="h-20 w-20 rounded-xl bg-orange-50 object-cover"
+                  onError={(e) => {
+                    e.currentTarget.src = PRODUCT_IMAGE_FALLBACK;
+                  }}
                 />
                 <div className="min-w-0 flex-1">
                   <div className="flex items-start justify-between gap-2">

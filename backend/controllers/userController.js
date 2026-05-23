@@ -306,10 +306,6 @@ export const updateProfile = async (req, res) => {
       updateData.profilePic = imageUrl;
     }
 
-    if (imageUrl) {
-      updateData.profilePic = imageUrl;
-    }
-
     // 🟢 3. Update DB
     const updatedUser = await User.findByIdAndUpdate(userId, updateData, {
       new: true,

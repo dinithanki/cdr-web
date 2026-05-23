@@ -1,4 +1,8 @@
 import Cart from "../models/cart.js";
+import { resolvePublicStorageUrl } from "../utils/storageUrl.js";
+
+const resolveCartItemImage = (image) =>
+  resolvePublicStorageUrl(image, "products", image || "");
 
 const normalizeItem = (item) => {
   if (!item) return null;
@@ -12,7 +16,7 @@ const normalizeItem = (item) => {
     productId,
     name: item.name || "",
     price: Number(item.price) || 0,
-    image: item.image || "",
+    image: resolveCartItemImage(item.image),
     size: item.size || "",
     category: item.category || "",
     qty,
@@ -52,7 +56,7 @@ const getOrCreateCart = async (userId) => {
 export const getCart = async (req, res) => {
   try {
     const cart = await Cart.findOne({ userId: req.user._id }).lean();
-    return res.json({ items: cart?.items || [] });
+    return res.json({ items: normalizeItems(cart?.items || []) });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

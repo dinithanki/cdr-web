@@ -138,6 +138,9 @@ export default function About() {
                         src={review.userId.profilePic}
                         alt={review.userId?.firstName || "Customer"}
                         className="h-11 w-11 rounded-full object-cover ring-2 ring-orange-100"
+                        onError={(e) => {
+                          e.currentTarget.style.display = "none";
+                        }}
                       />
                     ) : (
                       <div className="flex h-11 w-11 items-center justify-center rounded-full bg-orange-100 text-sm font-semibold text-orange-900">

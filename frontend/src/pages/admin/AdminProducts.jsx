@@ -9,6 +9,9 @@ const formatCurrency = (value) =>
     maximumFractionDigits: 0,
   }).format(Number(value) || 0);
 
+const PRODUCT_IMAGE_FALLBACK =
+  "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=400&q=80";
+
 export default function AdminProducts() {
   const {
     products,
@@ -336,6 +339,9 @@ export default function AdminProducts() {
                     src={viewProduct.image}
                     alt={viewProduct.name || "Product image"}
                     className="h-40 w-40 rounded-xl border object-cover shadow-sm"
+                    onError={(e) => {
+                      e.currentTarget.src = PRODUCT_IMAGE_FALLBACK;
+                    }}
                   />
                 ) : (
                   <div className="flex h-40 w-40 items-center justify-center rounded-xl border bg-gray-50 text-xs text-gray-400">

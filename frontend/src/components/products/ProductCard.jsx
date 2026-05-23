@@ -39,6 +39,9 @@ export default function ProductCard({ product }) {
           alt={product.name}
           className="w-full aspect-square object-cover group-hover:scale-110 transition duration-500"
           loading="lazy"
+          onError={(e) => {
+            e.currentTarget.src = PLACEHOLDER_IMAGE;
+          }}
         />
         {/* Badge */}
         {product.preparationTime && (

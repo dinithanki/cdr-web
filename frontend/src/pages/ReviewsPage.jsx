@@ -94,6 +94,9 @@ export default function ReviewsPage() {
                       src={review.userId.profilePic}
                       alt={review.userId?.firstName}
                       className="w-10 h-10 rounded-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.style.display = "none";
+                      }}
                     />
                   )}
                 </div>

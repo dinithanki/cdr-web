@@ -284,6 +284,10 @@ function HomePage() {
                         src={product.image}
                         alt={product.name}
                         className="h-full w-full object-cover transition duration-300 group-hover:scale-110"
+                        onError={(e) => {
+                          e.currentTarget.src =
+                            "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=900&q=80";
+                        }}
                       />
                       <div className="absolute left-3 top-3 rounded-full bg-black/45 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-white backdrop-blur">
                         Chef-Curated Selection
@@ -366,6 +370,9 @@ function HomePage() {
                       src={review.userId.profilePic}
                       alt={review.userId?.firstName || "Customer"}
                       className="size-10 rounded-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.style.display = "none";
+                      }}
                     />
                   ) : (
                     <div className="flex size-10 items-center justify-center rounded-full bg-orange-200 text-xs font-bold text-orange-700">

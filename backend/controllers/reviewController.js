@@ -1,5 +1,20 @@
 import Review from "../models/review.js";
 import Order from "../models/order.js";
+import { resolvePublicStorageUrl } from "../utils/storageUrl.js";
+
+const serializeReview = (review) => {
+  const reviewObject = review.toObject ? review.toObject() : review;
+
+  if (reviewObject.userId?.profilePic) {
+    reviewObject.userId.profilePic = resolvePublicStorageUrl(
+      reviewObject.userId.profilePic,
+      "users",
+      "",
+    );
+  }
+
+  return reviewObject;
+};
 
 // Create a new review (user can only review delivered orders)
 export const createReview = async (req, res) => {
@@ -80,7 +95,7 @@ export const getApprovedReviews = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      data: reviews,
+      data: reviews.map(serializeReview),
     });
   } catch (error) {
     return res.status(500).json({
@@ -108,7 +123,7 @@ export const getProductReviews = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      data: filteredReviews,
+      data: filteredReviews.map(serializeReview),
     });
   } catch (error) {
     return res.status(500).json({
@@ -143,13 +158,13 @@ export const getUserReviews = async (req, res) => {
 export const getAllReviews = async (req, res) => {
   try {
     const reviews = await Review.find()
-      .populate("userId", "firstName lastName email")
+      .populate("userId", "firstName lastName email profilePic")
       .populate("orderId", "items totalAmount")
       .sort({ createdAt: -1 });
 
     return res.status(200).json({
       success: true,
-      data: reviews,
+      data: reviews.map(serializeReview),
     });
   } catch (error) {
     return res.status(500).json({
