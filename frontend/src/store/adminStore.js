@@ -64,8 +64,7 @@ export const useAdminStore = create((set) => ({
     try {
       set({ ordersLoading: true });
 
-      // Fallback list helps if backend uses a different admin orders endpoint.
-      const endpoints = ["/orders/admin/all", "/orders/all", "/orders"];
+      const endpoints = ["/orders/admin/all", "/orders"];
       let fetchedOrders = [];
 
       for (const endpoint of endpoints) {
