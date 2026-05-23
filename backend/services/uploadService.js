@@ -102,7 +102,9 @@ const uploadToSupabase = async (file, folder = "") => {
     throw new Error(`Supabase upload failed: ${error.message}`);
   }
 
-  return filePath;
+  const { data } = supabase.storage.from(BUCKET).getPublicUrl(filePath);
+
+  return data.publicUrl;
 };
 
 // ✅ PROFILE IMAGE

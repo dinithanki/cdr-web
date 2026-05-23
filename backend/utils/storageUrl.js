@@ -10,6 +10,12 @@ const getPublicStorageBaseUrl = () => {
   return `${supabaseUrl}/storage/v1/object/public/${DEFAULT_SUPABASE_BUCKET}`;
 };
 
+const encodeStoragePath = (path) =>
+  path
+    .split("/")
+    .map((part) => encodeURIComponent(part))
+    .join("/");
+
 export const resolvePublicStorageUrl = (image, folder, fallback = "") => {
   const rawImage = image?.trim();
 
@@ -28,7 +34,7 @@ export const resolvePublicStorageUrl = (image, folder, fallback = "") => {
           url.pathname.slice(markerIndex + marker.length),
         );
 
-        return `${publicStorageBaseUrl}/${encodeURI(storagePath)}`;
+        return `${publicStorageBaseUrl}/${encodeStoragePath(storagePath)}`;
       }
     } catch {
       return rawImage;
@@ -43,5 +49,5 @@ export const resolvePublicStorageUrl = (image, folder, fallback = "") => {
     ? rawImage
     : `${folder}/${rawImage}`;
 
-  return `${publicStorageBaseUrl}/${encodeURI(imagePath)}`;
+  return `${publicStorageBaseUrl}/${encodeStoragePath(imagePath)}`;
 };
