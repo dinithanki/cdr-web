@@ -2,6 +2,13 @@ import { useEffect, useState } from "react";
 import { useProductStore } from "../../store/useProductStore.js";
 import { confirmAction } from "../../utils/confirmAction.js";
 
+const formatCurrency = (value) =>
+  new Intl.NumberFormat("en-LK", {
+    style: "currency",
+    currency: "LKR",
+    maximumFractionDigits: 0,
+  }).format(Number(value) || 0);
+
 export default function AdminProducts() {
   const {
     products,
@@ -263,7 +270,7 @@ export default function AdminProducts() {
                     </td>
                     <td className="px-4 py-3">{product.category}</td>
                     <td className="px-4 py-3">
-                      ${Number(product.price || 0).toFixed(2)}
+                      {formatCurrency(product.price)}
                     </td>
                     <td className="px-4 py-3">{product.size || "Medium"}</td>
                     <td className="px-4 py-3">
@@ -350,8 +357,8 @@ export default function AdminProducts() {
                 {viewProduct.description || "Not available"}
               </p>
               <p>
-                <span className="font-medium text-gray-900">Price:</span> $
-                {Number(viewProduct.price || 0).toFixed(2)}
+                <span className="font-medium text-gray-900">Price:</span>{" "}
+                {formatCurrency(viewProduct.price)}
               </p>
               <p>
                 <span className="font-medium text-gray-900">Size:</span>{" "}

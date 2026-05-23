@@ -1,4 +1,4 @@
-import Contact from "../models/Contact.js";
+import Contact from "../models/contact.js";
 
 // 🟢 USER - Create contact ticket (LOGIN REQUIRED)
 export const createContact = async (req, res) => {

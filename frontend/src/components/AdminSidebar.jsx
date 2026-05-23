@@ -21,7 +21,7 @@ const AdminSidebar = () => {
   const isActive = (path) => location.pathname === path;
 
   return (
-    <aside className="w-64 min-h-screen bg-linear-to-b from-slate-900 via-slate-800 to-slate-900 flex flex-col p-4 shadow-2xl border-r border-slate-700">
+    <aside className="flex h-screen w-64 flex-col overflow-y-auto border-r border-slate-700 bg-linear-to-b from-slate-900 via-slate-800 to-slate-900 p-4 shadow-2xl">
       {/* LOGO / HEADER */}
       <div className="rounded-xl bg-linear-to-r from-orange-600 to-red-600 p-4 mb-8 shadow-lg">
         <h2 className="text-2xl font-black text-white">Admin</h2>
