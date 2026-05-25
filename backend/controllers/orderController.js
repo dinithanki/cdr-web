@@ -133,7 +133,10 @@ export const createPayHerePayment = async (req, res) => {
     const currency = String(process.env.PAYHERE_CURRENCY || "LKR").trim();
     const sandbox =
       String(process.env.PAYHERE_SANDBOX || "false").trim() === "true";
-    const clientUrl = process.env.CLIENT_URL || "http://localhost:5173";
+    const clientUrl =
+      process.env.FRONTEND_URL ||
+      process.env.CLIENT_URL ||
+      "http://localhost:5173";
     const serverUrl =
       process.env.SERVER_URL || `http://localhost:${process.env.PORT || 5000}`;
 

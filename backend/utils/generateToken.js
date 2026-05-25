@@ -4,7 +4,9 @@ export const getAuthCookieOptions = () => {
   const isProductionLike =
     process.env.NODE_ENV === "production" ||
     Boolean(process.env.RENDER) ||
-    process.env.CLIENT_URL?.startsWith("https://");
+    (process.env.FRONTEND_URL || process.env.CLIENT_URL)?.startsWith(
+      "https://",
+    );
 
   return {
     httpOnly: true,
