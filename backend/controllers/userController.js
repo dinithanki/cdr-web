@@ -240,7 +240,19 @@ export const forgotPassword = async (req, res) => {
     user.resetExpire = Date.now() + 1000 * 60 * 15;
 
     await user.save();
-    const frontendUrl = process.env.FRONTEND_URL || process.env.CLIENT_URL;
+    const frontendUrl =
+      process.env.FRONTEND_URL || process.env.CLIENT_URL || "";
+
+    if (
+      !frontendUrl ||
+      (process.env.NODE_ENV === "production" &&
+        frontendUrl.includes("localhost"))
+    ) {
+      throw new Error(
+        "Set FRONTEND_URL to your deployed frontend URL in production.",
+      );
+    }
+
     const resetLink = `${frontendUrl}/reset-password/${token}`;
 
     await sendEmail(
