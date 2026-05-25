@@ -6,6 +6,8 @@ import crypto from "crypto";
 import { sendEmail } from "../services/emailService.js";
 import { resolvePublicStorageUrl } from "../utils/storageUrl.js";
 
+const DEFAULT_FRONTEND_URL = "https://cdr-web-weld.vercel.app";
+
 const serializeUser = (user) => ({
   _id: user._id,
   firstName: user.firstName,
@@ -246,6 +248,7 @@ export const forgotPassword = async (req, res) => {
       process.env.FRONTEND_URL,
       process.env.CLIENT_URL,
       req.get("origin"),
+      DEFAULT_FRONTEND_URL,
     ];
 
     const frontendUrl = urlCandidates
