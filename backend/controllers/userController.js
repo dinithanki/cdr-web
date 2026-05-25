@@ -240,15 +240,27 @@ export const forgotPassword = async (req, res) => {
     user.resetExpire = Date.now() + 1000 * 60 * 15;
 
     await user.save();
-    const frontendUrl =
-      process.env.FRONTEND_URL || process.env.CLIENT_URL || "";
     const isHostedEnvironment =
       process.env.NODE_ENV === "production" || Boolean(process.env.RENDER);
+    const urlCandidates = [
+      process.env.FRONTEND_URL,
+      process.env.CLIENT_URL,
+      req.get("origin"),
+    ];
 
-    if (
-      !frontendUrl ||
-      (isHostedEnvironment && frontendUrl.includes("localhost"))
-    ) {
+    const frontendUrl = urlCandidates
+      .map((value) =>
+        String(value || "")
+          .trim()
+          .replace(/\/+$/, ""),
+      )
+      .find((value) => {
+        if (!value) return false;
+        if (isHostedEnvironment && value.includes("localhost")) return false;
+        return true;
+      });
+
+    if (!frontendUrl) {
       throw new Error(
         "Set FRONTEND_URL to your deployed frontend URL in production.",
       );
