@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Star, X } from "lucide-react";
 import { useReviewStore } from "../store/reviewStore.js";
+import { formatOrderId } from "../utils/orderId.js";
 
 export default function ReviewModal({
   order,
@@ -67,7 +68,7 @@ export default function ReviewModal({
             <div className="text-sm text-gray-600 space-y-1">
               <p>
                 <span className="font-medium">Order ID:</span> #
-                {order._id?.slice(-8).toUpperCase()}
+                {formatOrderId(order._id)}
               </p>
               <p>
                 <span className="font-medium">Items:</span>{" "}

@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { useAdminStore } from "../../store/adminStore.js";
 import { useProductStore } from "../../store/useProductStore.js";
+import { formatOrderId } from "../../utils/orderId.js";
 
 const formatCurrency = (value) =>
   new Intl.NumberFormat("en-LK", {
@@ -217,10 +218,7 @@ const AdminDashboard = () => {
                       className="border-b text-sm text-slate-700"
                     >
                       <td className="px-4 py-3 font-medium text-slate-900">
-                        #
-                        {String(order._id || "")
-                          .slice(-6)
-                          .toUpperCase()}
+                        #{formatOrderId(order._id)}
                       </td>
                       <td className="px-4 py-3">{order.name || "Unknown"}</td>
                       <td className="px-4 py-3">

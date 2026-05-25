@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useAdminStore } from "../../../store/adminStore.js";
+import { formatOrderId } from "../../../utils/orderId.js";
 
 const ORDER_STATUSES = [
   "PENDING",
@@ -190,10 +191,7 @@ export default function OrdersPage() {
                   >
                     <td className="px-4 py-3">
                       <div className="font-medium text-gray-900">
-                        #
-                        {String(order._id || "")
-                          .slice(-6)
-                          .toUpperCase()}
+                        #{formatOrderId(order._id)}
                       </div>
                       <div className="text-xs text-gray-500">
                         {formatDate(order.createdAt)}
@@ -276,7 +274,7 @@ export default function OrdersPage() {
             <div className="space-y-2 text-sm text-gray-700">
               <p>
                 <span className="font-medium text-gray-900">Order ID:</span>{" "}
-                {selectedOrder._id}
+                {formatOrderId(selectedOrder._id)}
               </p>
               <p>
                 <span className="font-medium text-gray-900">Customer:</span>{" "}

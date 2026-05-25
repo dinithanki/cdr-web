@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAuthStore } from "../../store/authStore.js";
 import { useReviewStore } from "../../store/reviewStore.js";
+import { formatOrderId } from "../../utils/orderId.js";
 import {
   ChevronDown,
   Package,
@@ -235,7 +236,7 @@ function Orders() {
                     </div>
                     <div className="flex-1">
                       <p className="font-semibold text-gray-900">
-                        Order #{order._id?.slice(-8).toUpperCase()}
+                        Order #{formatOrderId(order._id)}
                       </p>
                       <p className="text-sm text-gray-600">
                         {formatDate(order.createdAt)} •{" "}
