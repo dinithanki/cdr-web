@@ -242,11 +242,12 @@ export const forgotPassword = async (req, res) => {
     await user.save();
     const frontendUrl =
       process.env.FRONTEND_URL || process.env.CLIENT_URL || "";
+    const isHostedEnvironment =
+      process.env.NODE_ENV === "production" || Boolean(process.env.RENDER);
 
     if (
       !frontendUrl ||
-      (process.env.NODE_ENV === "production" &&
-        frontendUrl.includes("localhost"))
+      (isHostedEnvironment && frontendUrl.includes("localhost"))
     ) {
       throw new Error(
         "Set FRONTEND_URL to your deployed frontend URL in production.",
