@@ -1,4 +1,4 @@
 export const formatOrderId = (orderId) =>
   String(orderId || "")
-    .slice(-8)
+    .slice(-6)
     .toUpperCase();
