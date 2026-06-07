@@ -47,15 +47,15 @@ export default function Contact() {
           <div className="space-y-6">
             <div className="flex items-center text-gray-600">
               <Mail className="h-6 w-6 text-indigo-600 mr-4" />
-              <span>support@example.com</span>
+              <span>support@dragondine.com</span>
             </div>
             <div className="flex items-center text-gray-600">
               <Phone className="h-6 w-6 text-indigo-600 mr-4" />
-              <span>+1 (555) 123-4567</span>
+              <span>+94 77 123 4567</span>
             </div>
             <div className="flex items-center text-gray-600">
               <MapPin className="h-6 w-6 text-indigo-600 mr-4" />
-              <span>123 Main Street, City, Country</span>
+              <span>Kurunegala, Sri Lanka</span>
             </div>
           </div>
         </div>
